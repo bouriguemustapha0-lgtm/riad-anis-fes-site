@@ -59,29 +59,43 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-terracotta: var(--terracotta);
+  --color-majorelle: var(--majorelle);
+  --color-gold: var(--gold);
+  --color-ivory: var(--ivory);
+  --color-burnt: var(--burnt);
+  --font-serif: "Fraunces", Georgia, serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
+  /* Brand palette */
+  --terracotta: oklch(0.58 0.16 40);       /* #C1502E */
+  --majorelle: oklch(0.35 0.13 265);       /* #1B3B6F */
+  --gold: oklch(0.72 0.11 82);             /* #C9A24B */
+  --ivory: oklch(0.96 0.015 85);           /* #F7F1E8 */
+  --burnt: oklch(0.22 0.03 45);            /* #2E2018 */
+
+  --background: var(--ivory);
+  --foreground: var(--burnt);
+  --card: oklch(0.98 0.008 85);
+  --card-foreground: var(--burnt);
+  --popover: oklch(0.98 0.008 85);
+  --popover-foreground: var(--burnt);
+  --primary: var(--terracotta);
+  --primary-foreground: oklch(0.98 0.01 85);
+  --secondary: var(--majorelle);
+  --secondary-foreground: oklch(0.98 0.01 85);
+  --muted: oklch(0.93 0.02 75);
+  --muted-foreground: oklch(0.42 0.03 45);
+  --accent: var(--gold);
+  --accent-foreground: var(--burnt);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
+  --border: oklch(0.88 0.02 75);
+  --input: oklch(0.88 0.02 75);
+  --ring: var(--terracotta);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -140,5 +154,47 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, .font-serif {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+}
+
+@utility zellige-divider {
+  height: 14px;
+  width: 100%;
+  background-image:
+    linear-gradient(45deg, var(--terracotta) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--terracotta) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--majorelle) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--gold) 75%);
+  background-size: 14px 14px;
+  background-position: 0 0, 0 7px, 7px -7px, -7px 0;
+  opacity: 0.5;
+}
+
+@utility reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 700ms ease-out, transform 700ms ease-out;
+
+  &.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@utility hover-zoom {
+  overflow: hidden;
+  & img {
+    transition: transform 700ms ease;
+  }
+  &:hover img {
+    transform: scale(1.05);
   }
 }
