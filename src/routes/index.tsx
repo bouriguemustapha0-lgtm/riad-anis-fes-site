@@ -1,11 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import heroPatio from "@/assets/hero-patio.jpg";
-import roomDouble from "@/assets/room-double.jpg";
-import roomTriple from "@/assets/room-triple.jpg";
-import roomQuad from "@/assets/room-quad.jpg";
-import restaurantImg from "@/assets/restaurant.jpg";
-import terraceImg from "@/assets/terrace.jpg";
+import heroPatioAsset from "@/assets/hero-patio.jpg.asset.json";
+import roomDoubleAsset from "@/assets/room-double.jpg.asset.json";
+import roomTripleAsset from "@/assets/room-triple.jpg.asset.json";
+import roomQuadAsset from "@/assets/room-quad.jpg.asset.json";
+import restaurantAsset from "@/assets/restaurant.jpg.asset.json";
+import terraceAsset from "@/assets/terrace.jpg.asset.json";
+
+const heroPatio = heroPatioAsset.url;
+const roomDouble = roomDoubleAsset.url;
+const roomTriple = roomTripleAsset.url;
+const roomQuad = roomQuadAsset.url;
+const restaurantImg = restaurantAsset.url;
+const terraceImg = terraceAsset.url;
 
 export const Route = createFileRoute("/")({
   component: Index,
