@@ -6,6 +6,10 @@ import roomTripleAsset from "@/assets/room-triple.jpg.asset.json";
 import roomQuadAsset from "@/assets/room-quad.jpg.asset.json";
 import restaurantAsset from "@/assets/restaurant.jpg.asset.json";
 import terraceAsset from "@/assets/terrace.jpg.asset.json";
+import medinaNightAsset from "@/assets/medina-night.jpg.asset.json";
+import breakfastAsset from "@/assets/breakfast.jpg.asset.json";
+import dinnerZelligeAsset from "@/assets/dinner-zellige.jpg.asset.json";
+import moroccanMealAsset from "@/assets/moroccan-meal.jpg.asset.json";
 
 const heroPatio = heroPatioAsset.url;
 const roomDouble = roomDoubleAsset.url;
@@ -13,6 +17,110 @@ const roomTriple = roomTripleAsset.url;
 const roomQuad = roomQuadAsset.url;
 const restaurantImg = restaurantAsset.url;
 const terraceImg = terraceAsset.url;
+const medinaNight = medinaNightAsset.url;
+const breakfastImg = breakfastAsset.url;
+const dinnerZellige = dinnerZelligeAsset.url;
+const moroccanMeal = moroccanMealAsset.url;
+
+const GALLERY: { src: string; alt: string }[] = [
+  { src: dinnerZellige, alt: "Table marocaine dressée devant une fontaine en zelliges" },
+  { src: moroccanMeal, alt: "Repas marocain complet servi sur une mosaïque bleue" },
+  { src: breakfastImg, alt: "Petit-déjeuner servi devant un mur en mosaïque" },
+  { src: terraceImg, alt: "Terrasse du riad avec vue sur la médina de Fès" },
+  { src: medinaNight, alt: "Médina de Fès de nuit avec minarets illuminés" },
+  { src: heroPatio, alt: "Patio intérieur du riad avec fontaine en zelliges" },
+];
+
+function Gallery() {
+  const [open, setOpen] = useState<number | null>(null);
+  useEffect(() => {
+    if (open === null) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(null);
+      if (e.key === "ArrowRight") setOpen((i) => (i === null ? 0 : (i + 1) % GALLERY.length));
+      if (e.key === "ArrowLeft") setOpen((i) => (i === null ? 0 : (i - 1 + GALLERY.length) % GALLERY.length));
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+  return (
+    <section id="galerie" className="relative py-24 md:py-32">
+      <div className="mx-auto max-w-7xl px-6">
+        <div className="reveal mx-auto max-w-2xl text-center">
+          <p className="mb-4 text-xs font-medium uppercase tracking-[0.25em] text-[color:var(--terracotta)]">
+            Galerie
+          </p>
+          <h2 className="font-serif text-4xl leading-tight text-[color:var(--burnt)] md:text-5xl">
+            Un aperçu, avant l'arrivée
+          </h2>
+        </div>
+        <div className="reveal mt-16 grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
+          {GALLERY.map((g, i) => (
+            <button
+              key={g.src}
+              type="button"
+              onClick={() => setOpen(i)}
+              className={`hover-zoom group relative overflow-hidden rounded-2xl ${
+                i === 0 || i === 3 ? "md:col-span-2 md:row-span-2 aspect-square" : "aspect-square"
+              }`}
+            >
+              <img
+                src={g.src}
+                alt={g.alt}
+                loading="lazy"
+                className="h-full w-full object-cover"
+              />
+              <span className="absolute inset-0 bg-[color:var(--burnt)]/0 transition-colors group-hover:bg-[color:var(--burnt)]/20" />
+            </button>
+          ))}
+        </div>
+      </div>
+      {open !== null && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-[color:var(--burnt)]/95 p-4 backdrop-blur"
+          onClick={() => setOpen(null)}
+        >
+          <button
+            type="button"
+            aria-label="Fermer"
+            className="absolute right-6 top-6 text-3xl text-[color:var(--ivory)]"
+            onClick={() => setOpen(null)}
+          >
+            ×
+          </button>
+          <button
+            type="button"
+            aria-label="Précédent"
+            className="absolute left-4 text-3xl text-[color:var(--ivory)] md:left-8"
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpen((i) => (i === null ? 0 : (i - 1 + GALLERY.length) % GALLERY.length));
+            }}
+          >
+            ‹
+          </button>
+          <img
+            src={GALLERY[open].src}
+            alt={GALLERY[open].alt}
+            className="max-h-[85vh] max-w-[90vw] rounded-2xl object-contain shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          />
+          <button
+            type="button"
+            aria-label="Suivant"
+            className="absolute right-4 text-3xl text-[color:var(--ivory)] md:right-8"
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpen((i) => (i === null ? 0 : (i + 1) % GALLERY.length));
+            }}
+          >
+            ›
+          </button>
+        </div>
+      )}
+    </section>
+  );
+}
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -372,6 +480,24 @@ function Restaurant() {
                 className="aspect-[4/3] w-full rounded-2xl object-cover"
               />
             </div>
+            <div className="mt-4 grid grid-cols-2 gap-4">
+              <div className="hover-zoom rounded-2xl">
+                <img
+                  src={moroccanMeal}
+                  alt="Repas marocain servi sur mosaïque bleue"
+                  loading="lazy"
+                  className="aspect-[4/3] w-full rounded-2xl object-cover"
+                />
+              </div>
+              <div className="hover-zoom rounded-2xl">
+                <img
+                  src={breakfastImg}
+                  alt="Petit-déjeuner du riad"
+                  loading="lazy"
+                  className="aspect-[4/3] w-full rounded-2xl object-cover"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -603,8 +729,8 @@ function FinalCta() {
   return (
     <section id="contact" className="relative overflow-hidden bg-[color:var(--terracotta)] py-24 md:py-32">
       <img
-        src={terraceImg}
-        alt="Terrasse du riad au coucher du soleil"
+        src={medinaNight}
+        alt="Médina de Fès de nuit"
         loading="lazy"
         className="absolute inset-0 h-full w-full object-cover opacity-30"
       />
@@ -699,6 +825,7 @@ function Index() {
         <Amenities />
         <PracticalInfo />
         <Location />
+        <Gallery />
         <Reviews />
         <FinalCta />
       </main>
