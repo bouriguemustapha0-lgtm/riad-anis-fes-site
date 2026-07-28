@@ -80,16 +80,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "Riad Anis Fes — Refuge d'un autre temps au cœur de Fès" },
       { name: "description", content: "Riad traditionnel au cœur de la médina de Fès. Chambres cocons, cuisine marocaine, terrasse au coucher du soleil. Note 9,1/10." },
       { property: "og:title", content: "Riad Anis Fes — Refuge d'un autre temps au cœur de Fès" },
-      { property: "og:description", content: "Un riad d'exception à deux pas de la médina, entre zelliges centenaires et patios ombragés." },
+      { property: "og:description", content: "Riad traditionnel au cœur de la médina de Fès. Chambres cocons, cuisine marocaine, terrasse au coucher du soleil. Note 9,1/10." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Riad Anis Fes — Refuge d'un autre temps au cœur de Fès" },
+      { name: "twitter:description", content: "Riad traditionnel au cœur de la médina de Fès. Chambres cocons, cuisine marocaine, terrasse au coucher du soleil. Note 9,1/10." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/6ff39e40-d194-49d1-b576-21bc23f4bd56/id-preview-036a95e5--d77d4267-18a4-461d-b390-a46c62060a53.lovable.app-1785233446946.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/6ff39e40-d194-49d1-b576-21bc23f4bd56/id-preview-036a95e5--d77d4267-18a4-461d-b390-a46c62060a53.lovable.app-1785233446946.png" },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
