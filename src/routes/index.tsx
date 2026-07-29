@@ -77,16 +77,6 @@ function buildWhatsAppUrl({
   return `https://wa.me/${WHATSAPP_PHONE}?text=` + encodeURIComponent(lines.join("\n"));
 }
 
-function useWhatsAppUrl() {
-  const { t, lang } = useT();
-  const locale = lang === "fr" ? "fr-FR" : lang === "es" ? "es-ES" : lang === "ar" ? "ar-MA" : "en-GB";
-  const simple = `https://wa.me/${WHATSAPP_PHONE}?text=` + encodeURIComponent(t.wa.greetingSimple);
-  return {
-    simple,
-    withRoom: (room: string) => buildWhatsAppUrl({ room, wa: t.wa, locale }),
-  };
-}
-
 const RESERVATION_EVENT = "riad:set-reservation-room";
 
 function goToReservation(room?: string) {
