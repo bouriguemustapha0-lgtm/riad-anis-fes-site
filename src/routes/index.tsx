@@ -24,11 +24,41 @@ const dinnerZellige = dinnerZelligeAsset.url;
 const moroccanMeal = moroccanMealAsset.url;
 const logoUrl = logoAsset.url;
 
+const WHATSAPP_PHONE = "212661504917";
 const WHATSAPP_URL =
-  "https://wa.me/212661504917?text=" +
+  `https://wa.me/${WHATSAPP_PHONE}?text=` +
   encodeURIComponent(
     "Bonjour Riad Anis Fes, je souhaite vérifier les disponibilités pour un séjour.",
   );
+
+function buildWhatsAppUrl({
+  checkIn,
+  checkOut,
+  guests,
+  room,
+}: {
+  checkIn?: string;
+  checkOut?: string;
+  guests?: number | string;
+  room?: string;
+}) {
+  const fmt = (d?: string) => {
+    if (!d) return "";
+    const dt = new Date(d);
+    if (Number.isNaN(dt.getTime())) return d;
+    return dt.toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" });
+  };
+  const lines = [
+    "Bonjour Riad Anis Fes,",
+    "Je souhaite vérifier les disponibilités pour un séjour :",
+  ];
+  if (checkIn) lines.push(`• Arrivée : ${fmt(checkIn)}`);
+  if (checkOut) lines.push(`• Départ : ${fmt(checkOut)}`);
+  if (guests) lines.push(`• Voyageurs : ${guests}`);
+  if (room) lines.push(`• Chambre souhaitée : ${room}`);
+  lines.push("Merci !");
+  return `https://wa.me/${WHATSAPP_PHONE}?text=` + encodeURIComponent(lines.join("\n"));
+}
 
 const GALLERY: { src: string; alt: string }[] = [
   { src: dinnerZellige, alt: "Table marocaine dressée devant une fontaine en zelliges" },
@@ -181,9 +211,7 @@ function CtaButton({ children, variant = "primary", className = "" }: { children
       : "border border-current text-current hover:bg-current/10";
   return (
     <a
-      href={WHATSAPP_URL}
-      target="_blank"
-      rel="noopener noreferrer"
+      href="#contact"
       className={`${base} ${styles} ${className}`}
     >
       {children}
@@ -442,9 +470,13 @@ function Rooms() {
                 </ul>
                 <div className="mt-6 pt-6 border-t border-[color:var(--ivory)]/10">
                   <a
-                    href={WHATSAPP_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href={`#contact?room=${encodeURIComponent(r.name)}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const evt = new CustomEvent("prefill-room", { detail: r.name });
+                      window.dispatchEvent(evt);
+                      document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
+                    }}
                     className="inline-flex items-center gap-2 text-sm font-medium text-[color:var(--gold)] transition-colors hover:text-[color:var(--ivory)]"
                   >
                     BOOK NOW →
@@ -755,6 +787,25 @@ function Reviews() {
 }
 
 function FinalCta() {
+  const today = new Date().toISOString().slice(0, 10);
+  const tomorrow = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
+  const [checkIn, setCheckIn] = useState(today);
+  const [checkOut, setCheckOut] = useState(tomorrow);
+  const [guests, setGuests] = useState("2");
+  const [room, setRoom] = useState("");
+
+  useEffect(() => {
+    const onPrefill = (e: Event) => {
+      const detail = (e as CustomEvent<string>).detail;
+      if (detail) setRoom(detail);
+    };
+    window.addEventListener("prefill-room", onPrefill);
+    return () => window.removeEventListener("prefill-room", onPrefill);
+  }, []);
+
+  const invalidDates = checkIn && checkOut && checkOut <= checkIn;
+  const href = buildWhatsAppUrl({ checkIn, checkOut, guests, room });
+
   return (
     <section id="contact" className="relative overflow-hidden bg-[color:var(--terracotta)] py-24 md:py-32">
       <img
@@ -768,11 +819,81 @@ function FinalCta() {
           Le prochain chapitre de votre séjour à Fès commence ici
         </h2>
         <p className="mt-6 text-lg text-[color:var(--ivory)]/85">
-          Places limitées selon la saison — vérifiez vos dates dès maintenant.
+          Indiquez vos dates et le nombre de voyageurs — nous vous répondons sur WhatsApp.
         </p>
-        <div className="mt-10">
-          <CtaButton>BOOK NOW</CtaButton>
-        </div>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (invalidDates) return;
+            window.open(href, "_blank", "noopener,noreferrer");
+          }}
+          className="mx-auto mt-10 grid max-w-2xl gap-4 rounded-2xl bg-[color:var(--ivory)]/10 p-6 text-left backdrop-blur-md ring-1 ring-[color:var(--ivory)]/20 sm:grid-cols-2"
+        >
+          <label className="flex flex-col gap-1.5 text-xs font-medium uppercase tracking-widest text-[color:var(--ivory)]/80">
+            Arrivée
+            <input
+              type="date"
+              value={checkIn}
+              min={today}
+              onChange={(e) => setCheckIn(e.target.value)}
+              required
+              className="rounded-lg border border-[color:var(--ivory)]/30 bg-[color:var(--ivory)]/95 px-3 py-2.5 text-sm text-[color:var(--burnt)] outline-none focus:ring-2 focus:ring-[color:var(--gold)]"
+            />
+          </label>
+          <label className="flex flex-col gap-1.5 text-xs font-medium uppercase tracking-widest text-[color:var(--ivory)]/80">
+            Départ
+            <input
+              type="date"
+              value={checkOut}
+              min={checkIn || today}
+              onChange={(e) => setCheckOut(e.target.value)}
+              required
+              className="rounded-lg border border-[color:var(--ivory)]/30 bg-[color:var(--ivory)]/95 px-3 py-2.5 text-sm text-[color:var(--burnt)] outline-none focus:ring-2 focus:ring-[color:var(--gold)]"
+            />
+          </label>
+          <label className="flex flex-col gap-1.5 text-xs font-medium uppercase tracking-widest text-[color:var(--ivory)]/80">
+            Voyageurs
+            <select
+              value={guests}
+              onChange={(e) => setGuests(e.target.value)}
+              className="rounded-lg border border-[color:var(--ivory)]/30 bg-[color:var(--ivory)]/95 px-3 py-2.5 text-sm text-[color:var(--burnt)] outline-none focus:ring-2 focus:ring-[color:var(--gold)]"
+            >
+              {[1, 2, 3, 4, 5, 6].map((n) => (
+                <option key={n} value={n}>
+                  {n} {n === 1 ? "voyageur" : "voyageurs"}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="flex flex-col gap-1.5 text-xs font-medium uppercase tracking-widest text-[color:var(--ivory)]/80">
+            Chambre
+            <select
+              value={room}
+              onChange={(e) => setRoom(e.target.value)}
+              className="rounded-lg border border-[color:var(--ivory)]/30 bg-[color:var(--ivory)]/95 px-3 py-2.5 text-sm text-[color:var(--burnt)] outline-none focus:ring-2 focus:ring-[color:var(--gold)]"
+            >
+              <option value="">Sans préférence</option>
+              <option value="Chambre Double">Chambre Double</option>
+              <option value="Chambre Triple">Chambre Triple</option>
+              <option value="Chambre Quadruple">Chambre Quadruple</option>
+            </select>
+          </label>
+          {invalidDates && (
+            <p className="sm:col-span-2 text-sm text-[color:var(--gold)]">
+              La date de départ doit être après la date d'arrivée.
+            </p>
+          )}
+          <button
+            type="submit"
+            disabled={!!invalidDates}
+            className="sm:col-span-2 mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-[color:var(--burnt)] px-6 py-3.5 text-sm font-medium tracking-wide text-[color:var(--ivory)] transition-all duration-300 hover:bg-[color:var(--gold)] hover:text-[color:var(--burnt)] disabled:opacity-50"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M20.52 3.48A11.86 11.86 0 0 0 12.06 0C5.5 0 .17 5.33.17 11.9c0 2.1.55 4.14 1.6 5.94L0 24l6.35-1.67a11.9 11.9 0 0 0 5.7 1.45h.01c6.56 0 11.89-5.33 11.89-11.9 0-3.18-1.24-6.17-3.43-8.4ZM12.06 21.8h-.01a9.9 9.9 0 0 1-5.05-1.38l-.36-.21-3.77.99 1-3.67-.24-.38a9.9 9.9 0 1 1 18.34-5.25c0 5.47-4.45 9.9-9.91 9.9Zm5.43-7.42c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48a9 9 0 0 1-1.66-2.06c-.17-.3-.02-.46.13-.6.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.6-.92-2.2-.24-.58-.49-.5-.67-.5l-.57-.01a1.1 1.1 0 0 0-.8.37c-.27.3-1.05 1.02-1.05 2.5s1.08 2.9 1.23 3.1c.15.2 2.12 3.24 5.14 4.54.72.31 1.28.5 1.72.64.72.23 1.38.2 1.9.12.58-.08 1.76-.72 2-1.42.24-.7.24-1.28.17-1.42-.07-.14-.27-.22-.57-.37Z" />
+            </svg>
+            BOOK NOW ON WHATSAPP
+          </button>
+        </form>
       </div>
     </section>
   );
