@@ -188,6 +188,16 @@ function Gallery() {
 
 export const Route = createFileRoute("/")({
   component: Index,
+  head: () => ({
+    meta: [
+      { title: "Riad Anis Fes | Riad traditionnel à Fès" },
+      { name: "description", content: "Séjournez au Riad Anis Fes, maison traditionnelle près de la médina, avec chambres confortables, cuisine marocaine et terrasse." },
+      { property: "og:title", content: "Riad Anis Fes | Riad traditionnel à Fès" },
+      { property: "og:description", content: "Un séjour authentique au cœur de Fès, entre patio, cuisine marocaine et hospitalité chaleureuse." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
 });
 
 function useNav() {
@@ -213,8 +223,9 @@ function useScrolled(threshold = 40) {
   return scrolled;
 }
 
-function useReveal() {
+function useReveal(dependency: string) {
   useEffect(() => {
+    document.documentElement.classList.add("reveal-ready");
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
@@ -228,7 +239,7 @@ function useReveal() {
     );
     document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
     return () => io.disconnect();
-  }, []);
+  }, [dependency]);
 }
 
 function CtaButton({ children, variant = "primary", className = "" }: { children: React.ReactNode; variant?: "primary" | "ghost"; className?: string }) {
@@ -897,8 +908,8 @@ function Index() {
 }
 
 function IndexInner() {
-  useReveal();
   const { lang } = useT();
+  useReveal(lang);
   return (
     <div
       dir={lang === "ar" ? "rtl" : "ltr"}
