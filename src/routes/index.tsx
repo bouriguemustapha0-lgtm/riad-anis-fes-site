@@ -250,14 +250,13 @@ function CtaButton({ children, variant = "primary", className = "" }: { children
       : "border border-current text-current hover:bg-current/10";
   const { simple } = useWhatsAppUrl();
   return (
-    <a
-      href={simple}
-      target="_blank"
-      rel="noopener noreferrer"
+    <button
+      type="button"
+      onClick={() => goToReservation()}
       className={`${base} ${styles} ${className}`}
     >
       {children}
-    </a>
+    </button>
   );
 }
 
