@@ -718,25 +718,125 @@ function Reviews() {
 }
 
 function FinalCta() {
-  const { t } = useT();
+  const { t, lang } = useT();
+  const r = t.reservation;
+  const locale = lang === "fr" ? "fr-FR" : lang === "es" ? "es-ES" : lang === "ar" ? "ar-MA" : "en-GB";
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [checkIn, setCheckIn] = useState("");
+  const [checkOut, setCheckOut] = useState("");
+  const [guests, setGuests] = useState("2");
+  const [room, setRoom] = useState("");
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent<string>).detail;
+      setRoom(detail);
+    };
+    window.addEventListener(RESERVATION_EVENT, handler);
+    return () => window.removeEventListener(RESERVATION_EVENT, handler);
+  }, []);
+
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim() || (!email.trim() && !phone.trim())) {
+      setError(r.requiredHint);
+      return;
+    }
+    setError("");
+    const url = buildWhatsAppUrl({
+      name,
+      email,
+      phone,
+      checkIn,
+      checkOut,
+      guests,
+      room: room || undefined,
+      notes: message,
+      wa: t.wa,
+      locale,
+    });
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
+
+  const fieldClass =
+    "w-full rounded-xl border border-[color:var(--ivory)]/25 bg-[color:var(--ivory)]/10 px-4 py-3 text-sm text-[color:var(--ivory)] placeholder:text-[color:var(--ivory)]/40 outline-none transition focus:border-[color:var(--gold)] focus:bg-[color:var(--ivory)]/15";
+  const labelClass = "mb-1.5 block text-xs font-medium uppercase tracking-wider text-[color:var(--ivory)]/70";
+
   return (
     <section id="contact" className="relative overflow-hidden bg-[color:var(--terracotta)] py-24 md:py-32">
       <img
         src={medinaNight}
         alt="Médina de Fès de nuit"
         loading="lazy"
-        className="absolute inset-0 h-full w-full object-cover opacity-30"
+        className="absolute inset-0 h-full w-full object-cover opacity-25"
       />
-      <div className="relative mx-auto max-w-3xl px-6 text-center text-[color:var(--ivory)]">
-        <h2 className="font-serif text-4xl leading-tight md:text-6xl">
-          {t.finalCta.title}
-        </h2>
-        <p className="mt-6 text-lg text-[color:var(--ivory)]/85">
-          {t.finalCta.subtitle}
-        </p>
-        <div className="mt-10">
-          <CtaButton>{t.cta.book}</CtaButton>
+      <div className="relative mx-auto max-w-3xl px-6 text-[color:var(--ivory)]">
+        <div className="reveal text-center">
+          <p className="mb-3 text-xs font-medium uppercase tracking-[0.25em] text-[color:var(--gold)]">
+            {r.eyebrow}
+          </p>
+          <h2 className="font-serif text-4xl leading-tight md:text-5xl">{r.title}</h2>
+          <p className="mx-auto mt-4 max-w-xl text-base text-[color:var(--ivory)]/85">{r.subtitle}</p>
         </div>
+
+        <form onSubmit={submit} className="reveal mt-10 rounded-2xl bg-[color:var(--burnt)]/40 p-6 backdrop-blur md:p-8">
+          <div className="grid gap-5 md:grid-cols-2">
+            <div className="md:col-span-2">
+              <label htmlFor="r-name" className={labelClass}>{r.name}</label>
+              <input id="r-name" value={name} onChange={(e) => setName(e.target.value)} placeholder={r.namePh} className={fieldClass} autoComplete="name" />
+            </div>
+            <div>
+              <label htmlFor="r-email" className={labelClass}>{r.email}</label>
+              <input id="r-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={r.emailPh} className={fieldClass} autoComplete="email" />
+            </div>
+            <div>
+              <label htmlFor="r-phone" className={labelClass}>{r.phone}</label>
+              <input id="r-phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder={r.phonePh} className={fieldClass} autoComplete="tel" />
+            </div>
+            <div>
+              <label htmlFor="r-checkin" className={labelClass}>{r.checkIn}</label>
+              <input id="r-checkin" type="date" value={checkIn} onChange={(e) => setCheckIn(e.target.value)} className={fieldClass} />
+            </div>
+            <div>
+              <label htmlFor="r-checkout" className={labelClass}>{r.checkOut}</label>
+              <input id="r-checkout" type="date" value={checkOut} onChange={(e) => setCheckOut(e.target.value)} className={fieldClass} />
+            </div>
+            <div>
+              <label htmlFor="r-guests" className={labelClass}>{r.guests}</label>
+              <select id="r-guests" value={guests} onChange={(e) => setGuests(e.target.value)} className={fieldClass}>
+                {[1, 2, 3, 4, 5, 6].map((n) => (
+                  <option key={n} value={n} className="text-[color:var(--burnt)]">{n}{r.guestsUnit}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="r-room" className={labelClass}>{r.room}</label>
+              <select id="r-room" value={room} onChange={(e) => setRoom(e.target.value)} className={fieldClass}>
+                <option value="" className="text-[color:var(--burnt)]">{r.selectRoom}</option>
+                {t.rooms.list.map((rm) => (
+                  <option key={rm.name} value={rm.name} className="text-[color:var(--burnt)]">{rm.name}</option>
+                ))}
+              </select>
+            </div>
+            <div className="md:col-span-2">
+              <label htmlFor="r-message" className={labelClass}>{r.message}</label>
+              <textarea id="r-message" value={message} onChange={(e) => setMessage(e.target.value)} placeholder={r.messagePh} rows={3} className={fieldClass} />
+            </div>
+          </div>
+
+          {error && <p className="mt-4 text-sm text-[color:var(--ivory)]/90">{error}</p>}
+
+          <button
+            type="submit"
+            className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[color:var(--gold)] px-6 py-3.5 text-sm font-semibold tracking-wide text-[color:var(--burnt)] transition-colors hover:bg-[color:var(--ivory)] md:w-auto"
+          >
+            {r.submit}
+          </button>
+        </form>
       </div>
     </section>
   );
