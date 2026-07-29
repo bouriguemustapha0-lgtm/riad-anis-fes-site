@@ -463,7 +463,7 @@ const ROOM_IMAGES = [roomDouble, roomTriple, roomQuad];
 
 function Rooms() {
   const { t } = useT();
-  const { withRoom } = useWhatsAppUrl();
+  
   return (
     <section id="chambres" className="relative bg-[color:var(--burnt)] py-24 text-[color:var(--ivory)] md:py-32">
       <div className="mx-auto max-w-7xl px-6">
