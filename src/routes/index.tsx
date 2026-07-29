@@ -24,11 +24,41 @@ const dinnerZellige = dinnerZelligeAsset.url;
 const moroccanMeal = moroccanMealAsset.url;
 const logoUrl = logoAsset.url;
 
+const WHATSAPP_PHONE = "212661504917";
 const WHATSAPP_URL =
-  "https://wa.me/212661504917?text=" +
+  `https://wa.me/${WHATSAPP_PHONE}?text=` +
   encodeURIComponent(
     "Bonjour Riad Anis Fes, je souhaite vérifier les disponibilités pour un séjour.",
   );
+
+function buildWhatsAppUrl({
+  checkIn,
+  checkOut,
+  guests,
+  room,
+}: {
+  checkIn?: string;
+  checkOut?: string;
+  guests?: number | string;
+  room?: string;
+}) {
+  const fmt = (d?: string) => {
+    if (!d) return "";
+    const dt = new Date(d);
+    if (Number.isNaN(dt.getTime())) return d;
+    return dt.toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" });
+  };
+  const lines = [
+    "Bonjour Riad Anis Fes,",
+    "Je souhaite vérifier les disponibilités pour un séjour :",
+  ];
+  if (checkIn) lines.push(`• Arrivée : ${fmt(checkIn)}`);
+  if (checkOut) lines.push(`• Départ : ${fmt(checkOut)}`);
+  if (guests) lines.push(`• Voyageurs : ${guests}`);
+  if (room) lines.push(`• Chambre souhaitée : ${room}`);
+  lines.push("Merci !");
+  return `https://wa.me/${WHATSAPP_PHONE}?text=` + encodeURIComponent(lines.join("\n"));
+}
 
 const GALLERY: { src: string; alt: string }[] = [
   { src: dinnerZellige, alt: "Table marocaine dressée devant une fontaine en zelliges" },
