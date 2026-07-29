@@ -810,6 +810,11 @@ function FinalCta() {
   const [checkOut, setCheckOut] = useState(tomorrow);
   const [guests, setGuests] = useState("2");
   const [room, setRoom] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [notes, setNotes] = useState("");
+  const [touched, setTouched] = useState(false);
 
   useEffect(() => {
     const onPrefill = (e: Event) => {
@@ -821,7 +826,16 @@ function FinalCta() {
   }, []);
 
   const invalidDates = checkIn && checkOut && checkOut <= checkIn;
-  const href = buildWhatsAppUrl({ checkIn, checkOut, guests, room });
+  const nameTrim = name.trim();
+  const emailTrim = email.trim();
+  const phoneTrim = phone.trim();
+  const nameError = !nameTrim ? "Veuillez indiquer votre nom." : nameTrim.length > 100 ? "Nom trop long (100 max)." : "";
+  const emailError = emailTrim && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailTrim) ? "Email invalide." : emailTrim.length > 255 ? "Email trop long." : "";
+  const phoneError = phoneTrim && !/^[+()0-9\s.-]{6,30}$/.test(phoneTrim) ? "Téléphone invalide." : "";
+  const contactError = !emailTrim && !phoneTrim ? "Indiquez un email ou un téléphone." : "";
+  const notesError = notes.length > 500 ? "Message trop long (500 max)." : "";
+  const hasError = !!(invalidDates || nameError || emailError || phoneError || contactError || notesError);
+  const href = buildWhatsAppUrl({ checkIn, checkOut, guests, room, name: nameTrim, email: emailTrim, phone: phoneTrim, notes });
 
   return (
     <section id="contact" className="relative overflow-hidden bg-[color:var(--terracotta)] py-24 md:py-32">
@@ -839,13 +853,55 @@ function FinalCta() {
           Indiquez vos dates et le nombre de voyageurs — nous vous répondons sur WhatsApp.
         </p>
         <form
+          noValidate
           onSubmit={(e) => {
             e.preventDefault();
-            if (invalidDates) return;
+            setTouched(true);
+            if (hasError) return;
             window.open(href, "_blank", "noopener,noreferrer");
           }}
           className="mx-auto mt-10 grid max-w-2xl gap-4 rounded-2xl bg-[color:var(--ivory)]/10 p-6 text-left backdrop-blur-md ring-1 ring-[color:var(--ivory)]/20 sm:grid-cols-2"
         >
+          <label className="flex flex-col gap-1.5 text-xs font-medium uppercase tracking-widest text-[color:var(--ivory)]/80 sm:col-span-2">
+            Nom complet
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              maxLength={100}
+              autoComplete="name"
+              required
+              placeholder="Prénom et nom"
+              className="rounded-lg border border-[color:var(--ivory)]/30 bg-[color:var(--ivory)]/95 px-3 py-2.5 text-sm text-[color:var(--burnt)] outline-none focus:ring-2 focus:ring-[color:var(--gold)]"
+            />
+            {touched && nameError && <span className="text-[11px] normal-case tracking-normal text-[color:var(--gold)]">{nameError}</span>}
+          </label>
+          <label className="flex flex-col gap-1.5 text-xs font-medium uppercase tracking-widest text-[color:var(--ivory)]/80">
+            Email
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              maxLength={255}
+              autoComplete="email"
+              placeholder="vous@exemple.com"
+              className="rounded-lg border border-[color:var(--ivory)]/30 bg-[color:var(--ivory)]/95 px-3 py-2.5 text-sm text-[color:var(--burnt)] outline-none focus:ring-2 focus:ring-[color:var(--gold)]"
+            />
+            {touched && emailError && <span className="text-[11px] normal-case tracking-normal text-[color:var(--gold)]">{emailError}</span>}
+          </label>
+          <label className="flex flex-col gap-1.5 text-xs font-medium uppercase tracking-widest text-[color:var(--ivory)]/80">
+            Téléphone
+            <input
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              maxLength={30}
+              autoComplete="tel"
+              placeholder="+212 6 12 34 56 78"
+              className="rounded-lg border border-[color:var(--ivory)]/30 bg-[color:var(--ivory)]/95 px-3 py-2.5 text-sm text-[color:var(--burnt)] outline-none focus:ring-2 focus:ring-[color:var(--gold)]"
+            />
+            {touched && phoneError && <span className="text-[11px] normal-case tracking-normal text-[color:var(--gold)]">{phoneError}</span>}
+          </label>
           <label className="flex flex-col gap-1.5 text-xs font-medium uppercase tracking-widest text-[color:var(--ivory)]/80">
             Arrivée
             <input
@@ -895,6 +951,21 @@ function FinalCta() {
               <option value="Chambre Quadruple">Chambre Quadruple</option>
             </select>
           </label>
+          <label className="flex flex-col gap-1.5 text-xs font-medium uppercase tracking-widest text-[color:var(--ivory)]/80 sm:col-span-2">
+            Message (optionnel)
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              maxLength={500}
+              rows={3}
+              placeholder="Demandes particulières, heure d'arrivée…"
+              className="resize-none rounded-lg border border-[color:var(--ivory)]/30 bg-[color:var(--ivory)]/95 px-3 py-2.5 text-sm text-[color:var(--burnt)] outline-none focus:ring-2 focus:ring-[color:var(--gold)]"
+            />
+            {touched && notesError && <span className="text-[11px] normal-case tracking-normal text-[color:var(--gold)]">{notesError}</span>}
+          </label>
+          {touched && contactError && (
+            <p className="sm:col-span-2 text-sm text-[color:var(--gold)]">{contactError}</p>
+          )}
           {invalidDates && (
             <p className="sm:col-span-2 text-sm text-[color:var(--gold)]">
               La date de départ doit être après la date d'arrivée.
@@ -902,7 +973,7 @@ function FinalCta() {
           )}
           <button
             type="submit"
-            disabled={!!invalidDates}
+            disabled={touched && hasError}
             className="sm:col-span-2 mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-[color:var(--burnt)] px-6 py-3.5 text-sm font-medium tracking-wide text-[color:var(--ivory)] transition-all duration-300 hover:bg-[color:var(--gold)] hover:text-[color:var(--burnt)] disabled:opacity-50"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
