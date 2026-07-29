@@ -36,11 +36,19 @@ function buildWhatsAppUrl({
   checkOut,
   guests,
   room,
+  name,
+  email,
+  phone,
+  notes,
 }: {
   checkIn?: string;
   checkOut?: string;
   guests?: number | string;
   room?: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  notes?: string;
 }) {
   const fmt = (d?: string) => {
     if (!d) return "";
@@ -48,14 +56,23 @@ function buildWhatsAppUrl({
     if (Number.isNaN(dt.getTime())) return d;
     return dt.toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" });
   };
+  const clean = (s?: string, max = 200) => (s ?? "").trim().slice(0, max);
   const lines = [
     "Bonjour Riad Anis Fes,",
     "Je souhaite vérifier les disponibilités pour un séjour :",
   ];
+  const cname = clean(name, 100);
+  if (cname) lines.push(`• Nom : ${cname}`);
+  const cemail = clean(email, 255);
+  if (cemail) lines.push(`• Email : ${cemail}`);
+  const cphone = clean(phone, 30);
+  if (cphone) lines.push(`• Téléphone : ${cphone}`);
   if (checkIn) lines.push(`• Arrivée : ${fmt(checkIn)}`);
   if (checkOut) lines.push(`• Départ : ${fmt(checkOut)}`);
   if (guests) lines.push(`• Voyageurs : ${guests}`);
   if (room) lines.push(`• Chambre souhaitée : ${room}`);
+  const cnotes = clean(notes, 500);
+  if (cnotes) lines.push(`• Message : ${cnotes}`);
   lines.push("Merci !");
   return `https://wa.me/${WHATSAPP_PHONE}?text=` + encodeURIComponent(lines.join("\n"));
 }
