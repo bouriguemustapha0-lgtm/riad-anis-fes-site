@@ -191,14 +191,17 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const NAV = [
-  { href: "#accueil", label: "Accueil" },
-  { href: "#chambres", label: "Chambres" },
-  { href: "#restaurant", label: "Restaurant" },
-  { href: "#equipements", label: "Équipements" },
-  { href: "#localisation", label: "Localisation" },
-  { href: "#contact", label: "Contact" },
-];
+function useNav() {
+  const { t } = useT();
+  return [
+    { href: "#accueil", label: t.nav.home },
+    { href: "#chambres", label: t.nav.rooms },
+    { href: "#restaurant", label: t.nav.restaurant },
+    { href: "#equipements", label: t.nav.amenities },
+    { href: "#localisation", label: t.nav.location },
+    { href: "#contact", label: t.nav.contact },
+  ];
+}
 
 function useScrolled(threshold = 40) {
   const [scrolled, setScrolled] = useState(false);
@@ -236,15 +239,59 @@ function CtaButton({ children, variant = "primary", className = "" }: { children
     variant === "primary"
       ? "bg-primary text-primary-foreground hover:bg-[color:var(--burnt)] shadow-[0_8px_24px_-8px_color-mix(in_oklab,var(--terracotta)_60%,transparent)]"
       : "border border-current text-current hover:bg-current/10";
+  const { simple } = useWhatsAppUrl();
   return (
     <a
-      href={WHATSAPP_URL}
+      href={simple}
       target="_blank"
       rel="noopener noreferrer"
       className={`${base} ${styles} ${className}`}
     >
       {children}
     </a>
+  );
+}
+
+function LanguageSwitcher({ dark = false }: { dark?: boolean }) {
+  const { lang, setLang } = useT();
+  const [open, setOpen] = useState(false);
+  const current = LANGS.find((l) => l.code === lang)!;
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        onBlur={() => setTimeout(() => setOpen(false), 120)}
+        aria-label="Language"
+        className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium tracking-wide transition-colors ${
+          dark
+            ? "border-[color:var(--burnt)]/20 text-[color:var(--burnt)] hover:bg-[color:var(--burnt)]/5"
+            : "border-white/30 text-white/95 hover:bg-white/10"
+        }`}
+      >
+        <span>{current.flag}</span>
+        <span>{current.label}</span>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6" /></svg>
+      </button>
+      {open && (
+        <ul className="absolute end-0 mt-2 min-w-[8rem] overflow-hidden rounded-xl border border-[color:var(--gold)]/30 bg-[color:var(--ivory)] py-1 text-[color:var(--burnt)] shadow-xl z-50">
+          {LANGS.map((l) => (
+            <li key={l.code}>
+              <button
+                type="button"
+                onMouseDown={(e) => { e.preventDefault(); setLang(l.code as Lang); setOpen(false); }}
+                className={`flex w-full items-center gap-2 px-3 py-2 text-xs hover:bg-[color:var(--gold)]/10 ${
+                  l.code === lang ? "font-semibold text-[color:var(--terracotta)]" : ""
+                }`}
+              >
+                <span>{l.flag}</span>
+                <span>{l.label}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }
 
