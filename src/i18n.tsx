@@ -196,7 +196,7 @@ const fr: Dict = {
     message: "Message (optionnel)",
     messagePh: "Une demande particulière ?",
     submit: "Réserver sur WhatsApp",
-    requiredHint: "Nom et un moyen de contact (email ou téléphone) requis.",
+    requiredHint: "Le nom complet est requis.",
   },
   wa: {
     greetingSimple: "Bonjour Riad Anis Fes, je souhaite vérifier les disponibilités pour un séjour.",
