@@ -228,7 +228,9 @@ function CtaButton({ children, variant = "primary", className = "" }: { children
       : "border border-current text-current hover:bg-current/10";
   return (
     <a
-      href="#contact"
+      href={WHATSAPP_URL}
+      target="_blank"
+      rel="noopener noreferrer"
       className={`${base} ${styles} ${className}`}
     >
       {children}
@@ -280,7 +282,7 @@ function Header() {
           ))}
         </nav>
         <div className="hidden lg:block">
-          <CtaButton>BOOK NOW</CtaButton>
+          <CtaButton>Réserver maintenant</CtaButton>
         </div>
         <button
           onClick={() => setOpen(!open)}
@@ -305,7 +307,7 @@ function Header() {
                 {n.label}
               </a>
             ))}
-            <CtaButton>BOOK NOW</CtaButton>
+            <CtaButton>Réserver maintenant</CtaButton>
           </nav>
         </div>
       )}
@@ -334,7 +336,7 @@ function Hero() {
           à deux pas de la médina et du Palais royal.
         </p>
         <div className="mt-10">
-          <CtaButton>BOOK NOW</CtaButton>
+          <CtaButton>Réserver maintenant</CtaButton>
         </div>
       </div>
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/70">
@@ -487,16 +489,12 @@ function Rooms() {
                 </ul>
                 <div className="mt-6 pt-6 border-t border-[color:var(--ivory)]/10">
                   <a
-                    href={`#contact?room=${encodeURIComponent(r.name)}`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      const evt = new CustomEvent("prefill-room", { detail: r.name });
-                      window.dispatchEvent(evt);
-                      document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
-                    }}
+                    href={buildWhatsAppUrl({ room: r.name })}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-sm font-medium text-[color:var(--gold)] transition-colors hover:text-[color:var(--ivory)]"
                   >
-                    BOOK NOW →
+                    Réserver maintenant →
                   </a>
                 </div>
               </div>
@@ -804,39 +802,6 @@ function Reviews() {
 }
 
 function FinalCta() {
-  const today = new Date().toISOString().slice(0, 10);
-  const tomorrow = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
-  const [checkIn, setCheckIn] = useState(today);
-  const [checkOut, setCheckOut] = useState(tomorrow);
-  const [guests, setGuests] = useState("2");
-  const [room, setRoom] = useState("");
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [notes, setNotes] = useState("");
-  const [touched, setTouched] = useState(false);
-
-  useEffect(() => {
-    const onPrefill = (e: Event) => {
-      const detail = (e as CustomEvent<string>).detail;
-      if (detail) setRoom(detail);
-    };
-    window.addEventListener("prefill-room", onPrefill);
-    return () => window.removeEventListener("prefill-room", onPrefill);
-  }, []);
-
-  const invalidDates = checkIn && checkOut && checkOut <= checkIn;
-  const nameTrim = name.trim();
-  const emailTrim = email.trim();
-  const phoneTrim = phone.trim();
-  const nameError = !nameTrim ? "Veuillez indiquer votre nom." : nameTrim.length > 100 ? "Nom trop long (100 max)." : "";
-  const emailError = emailTrim && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailTrim) ? "Email invalide." : emailTrim.length > 255 ? "Email trop long." : "";
-  const phoneError = phoneTrim && !/^[+()0-9\s.-]{6,30}$/.test(phoneTrim) ? "Téléphone invalide." : "";
-  const contactError = !emailTrim && !phoneTrim ? "Indiquez un email ou un téléphone." : "";
-  const notesError = notes.length > 500 ? "Message trop long (500 max)." : "";
-  const hasError = !!(invalidDates || nameError || emailError || phoneError || contactError || notesError);
-  const href = buildWhatsAppUrl({ checkIn, checkOut, guests, room, name: nameTrim, email: emailTrim, phone: phoneTrim, notes });
-
   return (
     <section id="contact" className="relative overflow-hidden bg-[color:var(--terracotta)] py-24 md:py-32">
       <img
@@ -850,138 +815,11 @@ function FinalCta() {
           Le prochain chapitre de votre séjour à Fès commence ici
         </h2>
         <p className="mt-6 text-lg text-[color:var(--ivory)]/85">
-          Indiquez vos dates et le nombre de voyageurs — nous vous répondons sur WhatsApp.
+          Places limitées selon la saison — réservez dès maintenant sur WhatsApp.
         </p>
-        <form
-          noValidate
-          onSubmit={(e) => {
-            e.preventDefault();
-            setTouched(true);
-            if (hasError) return;
-            window.open(href, "_blank", "noopener,noreferrer");
-          }}
-          className="mx-auto mt-10 grid max-w-2xl gap-4 rounded-2xl bg-[color:var(--ivory)]/10 p-6 text-left backdrop-blur-md ring-1 ring-[color:var(--ivory)]/20 sm:grid-cols-2"
-        >
-          <label className="flex flex-col gap-1.5 text-xs font-medium uppercase tracking-widest text-[color:var(--ivory)]/80 sm:col-span-2">
-            Nom complet
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              maxLength={100}
-              autoComplete="name"
-              required
-              placeholder="Prénom et nom"
-              className="rounded-lg border border-[color:var(--ivory)]/30 bg-[color:var(--ivory)]/95 px-3 py-2.5 text-sm text-[color:var(--burnt)] outline-none focus:ring-2 focus:ring-[color:var(--gold)]"
-            />
-            {touched && nameError && <span className="text-[11px] normal-case tracking-normal text-[color:var(--gold)]">{nameError}</span>}
-          </label>
-          <label className="flex flex-col gap-1.5 text-xs font-medium uppercase tracking-widest text-[color:var(--ivory)]/80">
-            Email
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              maxLength={255}
-              autoComplete="email"
-              placeholder="vous@exemple.com"
-              className="rounded-lg border border-[color:var(--ivory)]/30 bg-[color:var(--ivory)]/95 px-3 py-2.5 text-sm text-[color:var(--burnt)] outline-none focus:ring-2 focus:ring-[color:var(--gold)]"
-            />
-            {touched && emailError && <span className="text-[11px] normal-case tracking-normal text-[color:var(--gold)]">{emailError}</span>}
-          </label>
-          <label className="flex flex-col gap-1.5 text-xs font-medium uppercase tracking-widest text-[color:var(--ivory)]/80">
-            Téléphone
-            <input
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              maxLength={30}
-              autoComplete="tel"
-              placeholder="+212 6 12 34 56 78"
-              className="rounded-lg border border-[color:var(--ivory)]/30 bg-[color:var(--ivory)]/95 px-3 py-2.5 text-sm text-[color:var(--burnt)] outline-none focus:ring-2 focus:ring-[color:var(--gold)]"
-            />
-            {touched && phoneError && <span className="text-[11px] normal-case tracking-normal text-[color:var(--gold)]">{phoneError}</span>}
-          </label>
-          <label className="flex flex-col gap-1.5 text-xs font-medium uppercase tracking-widest text-[color:var(--ivory)]/80">
-            Arrivée
-            <input
-              type="date"
-              value={checkIn}
-              min={today}
-              onChange={(e) => setCheckIn(e.target.value)}
-              required
-              className="rounded-lg border border-[color:var(--ivory)]/30 bg-[color:var(--ivory)]/95 px-3 py-2.5 text-sm text-[color:var(--burnt)] outline-none focus:ring-2 focus:ring-[color:var(--gold)]"
-            />
-          </label>
-          <label className="flex flex-col gap-1.5 text-xs font-medium uppercase tracking-widest text-[color:var(--ivory)]/80">
-            Départ
-            <input
-              type="date"
-              value={checkOut}
-              min={checkIn || today}
-              onChange={(e) => setCheckOut(e.target.value)}
-              required
-              className="rounded-lg border border-[color:var(--ivory)]/30 bg-[color:var(--ivory)]/95 px-3 py-2.5 text-sm text-[color:var(--burnt)] outline-none focus:ring-2 focus:ring-[color:var(--gold)]"
-            />
-          </label>
-          <label className="flex flex-col gap-1.5 text-xs font-medium uppercase tracking-widest text-[color:var(--ivory)]/80">
-            Voyageurs
-            <select
-              value={guests}
-              onChange={(e) => setGuests(e.target.value)}
-              className="rounded-lg border border-[color:var(--ivory)]/30 bg-[color:var(--ivory)]/95 px-3 py-2.5 text-sm text-[color:var(--burnt)] outline-none focus:ring-2 focus:ring-[color:var(--gold)]"
-            >
-              {[1, 2, 3, 4, 5, 6].map((n) => (
-                <option key={n} value={n}>
-                  {n} {n === 1 ? "voyageur" : "voyageurs"}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="flex flex-col gap-1.5 text-xs font-medium uppercase tracking-widest text-[color:var(--ivory)]/80">
-            Chambre
-            <select
-              value={room}
-              onChange={(e) => setRoom(e.target.value)}
-              className="rounded-lg border border-[color:var(--ivory)]/30 bg-[color:var(--ivory)]/95 px-3 py-2.5 text-sm text-[color:var(--burnt)] outline-none focus:ring-2 focus:ring-[color:var(--gold)]"
-            >
-              <option value="">Sans préférence</option>
-              <option value="Chambre Double">Chambre Double</option>
-              <option value="Chambre Triple">Chambre Triple</option>
-              <option value="Chambre Quadruple">Chambre Quadruple</option>
-            </select>
-          </label>
-          <label className="flex flex-col gap-1.5 text-xs font-medium uppercase tracking-widest text-[color:var(--ivory)]/80 sm:col-span-2">
-            Message (optionnel)
-            <textarea
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              maxLength={500}
-              rows={3}
-              placeholder="Demandes particulières, heure d'arrivée…"
-              className="resize-none rounded-lg border border-[color:var(--ivory)]/30 bg-[color:var(--ivory)]/95 px-3 py-2.5 text-sm text-[color:var(--burnt)] outline-none focus:ring-2 focus:ring-[color:var(--gold)]"
-            />
-            {touched && notesError && <span className="text-[11px] normal-case tracking-normal text-[color:var(--gold)]">{notesError}</span>}
-          </label>
-          {touched && contactError && (
-            <p className="sm:col-span-2 text-sm text-[color:var(--gold)]">{contactError}</p>
-          )}
-          {invalidDates && (
-            <p className="sm:col-span-2 text-sm text-[color:var(--gold)]">
-              La date de départ doit être après la date d'arrivée.
-            </p>
-          )}
-          <button
-            type="submit"
-            disabled={touched && hasError}
-            className="sm:col-span-2 mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-[color:var(--burnt)] px-6 py-3.5 text-sm font-medium tracking-wide text-[color:var(--ivory)] transition-all duration-300 hover:bg-[color:var(--gold)] hover:text-[color:var(--burnt)] disabled:opacity-50"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M20.52 3.48A11.86 11.86 0 0 0 12.06 0C5.5 0 .17 5.33.17 11.9c0 2.1.55 4.14 1.6 5.94L0 24l6.35-1.67a11.9 11.9 0 0 0 5.7 1.45h.01c6.56 0 11.89-5.33 11.89-11.9 0-3.18-1.24-6.17-3.43-8.4ZM12.06 21.8h-.01a9.9 9.9 0 0 1-5.05-1.38l-.36-.21-3.77.99 1-3.67-.24-.38a9.9 9.9 0 1 1 18.34-5.25c0 5.47-4.45 9.9-9.91 9.9Zm5.43-7.42c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48a9 9 0 0 1-1.66-2.06c-.17-.3-.02-.46.13-.6.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.6-.92-2.2-.24-.58-.49-.5-.67-.5l-.57-.01a1.1 1.1 0 0 0-.8.37c-.27.3-1.05 1.02-1.05 2.5s1.08 2.9 1.23 3.1c.15.2 2.12 3.24 5.14 4.54.72.31 1.28.5 1.72.64.72.23 1.38.2 1.9.12.58-.08 1.76-.72 2-1.42.24-.7.24-1.28.17-1.42-.07-.14-.27-.22-.57-.37Z" />
-            </svg>
-            BOOK NOW ON WHATSAPP
-          </button>
-        </form>
+        <div className="mt-10">
+          <CtaButton>Réserver maintenant</CtaButton>
+        </div>
       </div>
     </section>
   );
