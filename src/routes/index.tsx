@@ -10,6 +10,7 @@ import medinaNightAsset from "@/assets/medina-night.jpg.asset.json";
 import breakfastAsset from "@/assets/breakfast.jpg.asset.json";
 import dinnerZelligeAsset from "@/assets/dinner-zellige.jpg.asset.json";
 import moroccanMealAsset from "@/assets/moroccan-meal.jpg.asset.json";
+import logoAsset from "@/assets/riad-anis-logo.jpg.asset.json";
 
 const heroPatio = heroPatioAsset.url;
 const roomDouble = roomDoubleAsset.url;
@@ -21,6 +22,13 @@ const medinaNight = medinaNightAsset.url;
 const breakfastImg = breakfastAsset.url;
 const dinnerZellige = dinnerZelligeAsset.url;
 const moroccanMeal = moroccanMealAsset.url;
+const logoUrl = logoAsset.url;
+
+const WHATSAPP_URL =
+  "https://wa.me/212661504917?text=" +
+  encodeURIComponent(
+    "Bonjour Riad Anis Fes, je souhaite vérifier les disponibilités pour un séjour.",
+  );
 
 const GALLERY: { src: string; alt: string }[] = [
   { src: dinnerZellige, alt: "Table marocaine dressée devant une fontaine en zelliges" },
@@ -172,7 +180,12 @@ function CtaButton({ children, variant = "primary", className = "" }: { children
       ? "bg-primary text-primary-foreground hover:bg-[color:var(--burnt)] shadow-[0_8px_24px_-8px_color-mix(in_oklab,var(--terracotta)_60%,transparent)]"
       : "border border-current text-current hover:bg-current/10";
   return (
-    <a href="#contact" className={`${base} ${styles} ${className}`}>
+    <a
+      href={WHATSAPP_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`${base} ${styles} ${className}`}
+    >
       {children}
     </a>
   );
@@ -190,9 +203,23 @@ function Header() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <a
           href="#accueil"
-          className={`font-serif text-xl tracking-wide ${scrolled ? "text-[color:var(--burnt)]" : "text-white"}`}
+          aria-label="Riad Anis Fes — Accueil"
+          className="flex items-center gap-3"
         >
-          Riad <span className="text-[color:var(--gold)]">Anis</span> Fes
+          <img
+            src={logoUrl}
+            alt="Logo Riad Anis Fes"
+            className={`h-11 w-11 rounded-full object-cover ring-1 transition-all duration-500 md:h-12 md:w-12 ${
+              scrolled ? "ring-[color:var(--gold)]/40" : "ring-white/40 bg-white/10"
+            }`}
+          />
+          <span
+            className={`font-serif text-lg tracking-wide md:text-xl ${
+              scrolled ? "text-[color:var(--burnt)]" : "text-white"
+            }`}
+          >
+            Riad <span className="text-[color:var(--gold)]">Anis</span> Fes
+          </span>
         </a>
         <nav className="hidden items-center gap-8 lg:flex">
           {NAV.map((n) => (
@@ -415,7 +442,9 @@ function Rooms() {
                 </ul>
                 <div className="mt-6 pt-6 border-t border-[color:var(--ivory)]/10">
                   <a
-                    href="#contact"
+                    href={WHATSAPP_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-sm font-medium text-[color:var(--gold)] transition-colors hover:text-[color:var(--ivory)]"
                   >
                     Vérifier la disponibilité →
