@@ -282,7 +282,7 @@ function Header() {
           ))}
         </nav>
         <div className="hidden lg:block">
-          <CtaButton>BOOK NOW</CtaButton>
+          <CtaButton>Réserver maintenant</CtaButton>
         </div>
         <button
           onClick={() => setOpen(!open)}
@@ -307,7 +307,7 @@ function Header() {
                 {n.label}
               </a>
             ))}
-            <CtaButton>BOOK NOW</CtaButton>
+            <CtaButton>Réserver maintenant</CtaButton>
           </nav>
         </div>
       )}
@@ -336,7 +336,7 @@ function Hero() {
           à deux pas de la médina et du Palais royal.
         </p>
         <div className="mt-10">
-          <CtaButton>BOOK NOW</CtaButton>
+          <CtaButton>Réserver maintenant</CtaButton>
         </div>
       </div>
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/70">
