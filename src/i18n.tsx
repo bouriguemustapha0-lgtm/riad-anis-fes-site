@@ -565,7 +565,7 @@ const ar: Dict = {
     message: "رسالة (اختياري)",
     messagePh: "أي طلب خاص؟",
     submit: "احجز عبر واتساب",
-    requiredHint: "الاسم الكامل مطلوب.",,
+    requiredHint: "الاسم الكامل مطلوب.",
   },
   wa: {
     greetingSimple: "مرحباً رياض أنيس فاس، أودّ الاستفسار عن توفر إقامة.",
