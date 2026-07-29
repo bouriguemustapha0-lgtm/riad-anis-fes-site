@@ -248,7 +248,6 @@ function CtaButton({ children, variant = "primary", className = "" }: { children
     variant === "primary"
       ? "bg-primary text-primary-foreground hover:bg-[color:var(--burnt)] shadow-[0_8px_24px_-8px_color-mix(in_oklab,var(--terracotta)_60%,transparent)]"
       : "border border-current text-current hover:bg-current/10";
-  const { simple } = useWhatsAppUrl();
   return (
     <button
       type="button"
