@@ -87,6 +87,14 @@ function useWhatsAppUrl() {
   };
 }
 
+const RESERVATION_EVENT = "riad:set-reservation-room";
+
+function goToReservation(room?: string) {
+  if (room) window.dispatchEvent(new CustomEvent(RESERVATION_EVENT, { detail: room }));
+  const el = document.getElementById("contact");
+  if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
 const GALLERY: { src: string; alt: string }[] = [
   { src: dinnerZellige, alt: "Table marocaine dressée devant une fontaine en zelliges" },
   { src: moroccanMeal, alt: "Repas marocain complet servi sur une mosaïque bleue" },
