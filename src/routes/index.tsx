@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { LanguageProvider, useT, LANGS, type Lang, type Dict } from "@/i18n";
 import heroPatioAsset from "@/assets/hero-patio.jpg.asset.json";
 import roomDoubleAsset from "@/assets/room-double.jpg.asset.json";
 import roomTripleAsset from "@/assets/room-triple.jpg.asset.json";
@@ -25,11 +26,6 @@ const moroccanMeal = moroccanMealAsset.url;
 const logoUrl = logoAsset.url;
 
 const WHATSAPP_PHONE = "212661504917";
-const WHATSAPP_URL =
-  `https://wa.me/${WHATSAPP_PHONE}?text=` +
-  encodeURIComponent(
-    "Bonjour Riad Anis Fes, je souhaite vérifier les disponibilités pour un séjour.",
-  );
 
 function buildWhatsAppUrl({
   checkIn,
@@ -40,6 +36,8 @@ function buildWhatsAppUrl({
   email,
   phone,
   notes,
+  wa,
+  locale,
 }: {
   checkIn?: string;
   checkOut?: string;
@@ -49,32 +47,44 @@ function buildWhatsAppUrl({
   email?: string;
   phone?: string;
   notes?: string;
+  wa: Dict["wa"];
+  locale: string;
 }) {
   const fmt = (d?: string) => {
     if (!d) return "";
     const dt = new Date(d);
     if (Number.isNaN(dt.getTime())) return d;
-    return dt.toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" });
+    return dt.toLocaleDateString(locale, { day: "2-digit", month: "long", year: "numeric" });
   };
   const clean = (s?: string, max = 200) => (s ?? "").trim().slice(0, max);
   const lines = [
-    "Bonjour Riad Anis Fes,",
-    "Je souhaite vérifier les disponibilités pour un séjour :",
+    wa.greetingHead,
+    wa.intent,
   ];
   const cname = clean(name, 100);
-  if (cname) lines.push(`• Nom : ${cname}`);
+  if (cname) lines.push(`• ${wa.labels.name} : ${cname}`);
   const cemail = clean(email, 255);
-  if (cemail) lines.push(`• Email : ${cemail}`);
+  if (cemail) lines.push(`• ${wa.labels.email} : ${cemail}`);
   const cphone = clean(phone, 30);
-  if (cphone) lines.push(`• Téléphone : ${cphone}`);
-  if (checkIn) lines.push(`• Arrivée : ${fmt(checkIn)}`);
-  if (checkOut) lines.push(`• Départ : ${fmt(checkOut)}`);
-  if (guests) lines.push(`• Voyageurs : ${guests}`);
-  if (room) lines.push(`• Chambre souhaitée : ${room}`);
+  if (cphone) lines.push(`• ${wa.labels.phone} : ${cphone}`);
+  if (checkIn) lines.push(`• ${wa.labels.checkIn} : ${fmt(checkIn)}`);
+  if (checkOut) lines.push(`• ${wa.labels.checkOut} : ${fmt(checkOut)}`);
+  if (guests) lines.push(`• ${wa.labels.guests} : ${guests}`);
+  if (room) lines.push(`• ${wa.labels.room} : ${room}`);
   const cnotes = clean(notes, 500);
-  if (cnotes) lines.push(`• Message : ${cnotes}`);
-  lines.push("Merci !");
+  if (cnotes) lines.push(`• ${wa.labels.message} : ${cnotes}`);
+  lines.push(wa.thanks);
   return `https://wa.me/${WHATSAPP_PHONE}?text=` + encodeURIComponent(lines.join("\n"));
+}
+
+function useWhatsAppUrl() {
+  const { t, lang } = useT();
+  const locale = lang === "fr" ? "fr-FR" : lang === "es" ? "es-ES" : lang === "ar" ? "ar-MA" : "en-GB";
+  const simple = `https://wa.me/${WHATSAPP_PHONE}?text=` + encodeURIComponent(t.wa.greetingSimple);
+  return {
+    simple,
+    withRoom: (room: string) => buildWhatsAppUrl({ room, wa: t.wa, locale }),
+  };
 }
 
 const GALLERY: { src: string; alt: string }[] = [
@@ -88,6 +98,7 @@ const GALLERY: { src: string; alt: string }[] = [
 
 function Gallery() {
   const [open, setOpen] = useState<number | null>(null);
+  const { t } = useT();
   useEffect(() => {
     if (open === null) return;
     const onKey = (e: KeyboardEvent) => {
@@ -103,10 +114,10 @@ function Gallery() {
       <div className="mx-auto max-w-7xl px-6">
         <div className="reveal mx-auto max-w-2xl text-center">
           <p className="mb-4 text-xs font-medium uppercase tracking-[0.25em] text-[color:var(--terracotta)]">
-            Galerie
+            {t.gallery.eyebrow}
           </p>
           <h2 className="font-serif text-4xl leading-tight text-[color:var(--burnt)] md:text-5xl">
-            Un aperçu, avant l'arrivée
+            {t.gallery.title}
           </h2>
         </div>
         <div className="reveal mt-16 grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
@@ -181,14 +192,17 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const NAV = [
-  { href: "#accueil", label: "Accueil" },
-  { href: "#chambres", label: "Chambres" },
-  { href: "#restaurant", label: "Restaurant" },
-  { href: "#equipements", label: "Équipements" },
-  { href: "#localisation", label: "Localisation" },
-  { href: "#contact", label: "Contact" },
-];
+function useNav() {
+  const { t } = useT();
+  return [
+    { href: "#accueil", label: t.nav.home },
+    { href: "#chambres", label: t.nav.rooms },
+    { href: "#restaurant", label: t.nav.restaurant },
+    { href: "#equipements", label: t.nav.amenities },
+    { href: "#localisation", label: t.nav.location },
+    { href: "#contact", label: t.nav.contact },
+  ];
+}
 
 function useScrolled(threshold = 40) {
   const [scrolled, setScrolled] = useState(false);
@@ -226,9 +240,10 @@ function CtaButton({ children, variant = "primary", className = "" }: { children
     variant === "primary"
       ? "bg-primary text-primary-foreground hover:bg-[color:var(--burnt)] shadow-[0_8px_24px_-8px_color-mix(in_oklab,var(--terracotta)_60%,transparent)]"
       : "border border-current text-current hover:bg-current/10";
+  const { simple } = useWhatsAppUrl();
   return (
     <a
-      href={WHATSAPP_URL}
+      href={simple}
       target="_blank"
       rel="noopener noreferrer"
       className={`${base} ${styles} ${className}`}
@@ -238,9 +253,54 @@ function CtaButton({ children, variant = "primary", className = "" }: { children
   );
 }
 
+function LanguageSwitcher({ dark = false }: { dark?: boolean }) {
+  const { lang, setLang } = useT();
+  const [open, setOpen] = useState(false);
+  const current = LANGS.find((l) => l.code === lang)!;
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        onBlur={() => setTimeout(() => setOpen(false), 120)}
+        aria-label="Language"
+        className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium tracking-wide transition-colors ${
+          dark
+            ? "border-[color:var(--burnt)]/20 text-[color:var(--burnt)] hover:bg-[color:var(--burnt)]/5"
+            : "border-white/30 text-white/95 hover:bg-white/10"
+        }`}
+      >
+        <span>{current.flag}</span>
+        <span>{current.label}</span>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6" /></svg>
+      </button>
+      {open && (
+        <ul className="absolute end-0 mt-2 min-w-[8rem] overflow-hidden rounded-xl border border-[color:var(--gold)]/30 bg-[color:var(--ivory)] py-1 text-[color:var(--burnt)] shadow-xl z-50">
+          {LANGS.map((l) => (
+            <li key={l.code}>
+              <button
+                type="button"
+                onMouseDown={(e) => { e.preventDefault(); setLang(l.code as Lang); setOpen(false); }}
+                className={`flex w-full items-center gap-2 px-3 py-2 text-xs hover:bg-[color:var(--gold)]/10 ${
+                  l.code === lang ? "font-semibold text-[color:var(--terracotta)]" : ""
+                }`}
+              >
+                <span>{l.flag}</span>
+                <span>{l.label}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 function Header() {
   const scrolled = useScrolled(40);
   const [open, setOpen] = useState(false);
+  const { t } = useT();
+  const NAV = useNav();
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
@@ -281,18 +341,22 @@ function Header() {
             </a>
           ))}
         </nav>
-        <div className="hidden lg:block">
-          <CtaButton>Réserver maintenant</CtaButton>
+        <div className="hidden items-center gap-3 lg:flex">
+          <LanguageSwitcher dark={scrolled} />
+          <CtaButton>{t.cta.book}</CtaButton>
         </div>
+        <div className="flex items-center gap-2 lg:hidden">
+          <LanguageSwitcher dark={scrolled} />
         <button
           onClick={() => setOpen(!open)}
           aria-label="Menu"
-          className={`lg:hidden ${scrolled ? "text-[color:var(--burnt)]" : "text-white"}`}
+          className={`${scrolled ? "text-[color:var(--burnt)]" : "text-white"}`}
         >
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
+        </div>
       </div>
       {open && (
         <div className="border-t border-[color:var(--gold)]/30 bg-[color:var(--ivory)] px-6 py-4 lg:hidden">
@@ -307,7 +371,7 @@ function Header() {
                 {n.label}
               </a>
             ))}
-            <CtaButton>Réserver maintenant</CtaButton>
+            <CtaButton>{t.cta.book}</CtaButton>
           </nav>
         </div>
       )}
@@ -316,6 +380,7 @@ function Header() {
 }
 
 function Hero() {
+  const { t } = useT();
   return (
     <section id="accueil" className="relative min-h-screen w-full overflow-hidden">
       <img
@@ -326,17 +391,16 @@ function Hero() {
       <div className="absolute inset-0 bg-gradient-to-b from-[color:var(--burnt)]/60 via-[color:var(--burnt)]/30 to-[color:var(--burnt)]/70" />
       <div className="relative z-10 mx-auto flex min-h-screen max-w-5xl flex-col items-center justify-center px-6 text-center text-white">
         <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-xs font-medium tracking-widest uppercase backdrop-blur">
-          ⭐ 9,1/10 — Les couples adorent cet endroit
+          {t.hero.badge}
         </span>
         <h1 className="max-w-3xl text-balance font-serif text-5xl leading-[1.05] md:text-7xl">
-          Un refuge d'un autre temps, au cœur de Fès
+          {t.hero.title}
         </h1>
         <p className="mt-6 max-w-2xl text-balance text-base text-white/90 md:text-lg">
-          Entre patios ombragés, zelliges centenaires et silence retrouvé, le Riad Anis Fes vous accueille
-          à deux pas de la médina et du Palais royal.
+          {t.hero.subtitle}
         </p>
         <div className="mt-10">
-          <CtaButton>Réserver maintenant</CtaButton>
+          <CtaButton>{t.cta.book}</CtaButton>
         </div>
       </div>
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/70">
@@ -348,46 +412,30 @@ function Hero() {
   );
 }
 
-const HIGHLIGHTS = [
-  { icon: "🚐", label: "Navette aéroport" },
-  { icon: "🚭", label: "Non-fumeurs" },
-  { icon: "📶", label: "Wi-Fi gratuit" },
-  { icon: "🅿️", label: "Parking à proximité" },
-  { icon: "🍽️", label: "2 restaurants" },
-  { icon: "👨‍👩‍👧", label: "Chambres familiales" },
-  { icon: "☀️", label: "Terrasse" },
-  { icon: "🔥", label: "Chauffage" },
-];
+const HIGHLIGHT_ICONS = ["🚐", "🚭", "📶", "🅿️", "🍽️", "👨‍👩‍👧", "☀️", "🔥"];
 
 function Welcome() {
+  const { t } = useT();
+  const [title1, title2] = t.welcome.title.split("\n");
   return (
     <section className="relative py-24 md:py-32">
       <div className="mx-auto grid max-w-7xl gap-12 px-6 md:grid-cols-2 md:items-center md:gap-16">
         <div className="reveal">
           <p className="mb-4 text-xs font-medium uppercase tracking-[0.25em] text-[color:var(--terracotta)]">
-            Bienvenue
+            {t.welcome.eyebrow}
           </p>
           <h2 className="font-serif text-4xl leading-tight text-[color:var(--burnt)] md:text-5xl">
-            L'âme de Fès,<br /> sans le bruit
+            {title1}<br /> {title2}
           </h2>
           <div className="mt-8 space-y-5 text-base leading-relaxed text-[color:var(--burnt)]/80">
-            <p>
-              Ici, on ne réserve pas une chambre. On s'offre une parenthèse. Le Riad Anis Fes se love dans
-              les ruelles de Fès, à seulement 200 mètres de la Place Batha, 400 mètres de la Medersa
-              Bouanania et 500 mètres de la porte emblématique de Bab Bou Jeloud. Le Palais royal veille à
-              1,8 km, la Karaouiyne — la plus vieille université du monde — n'est qu'à un kilomètre.
-            </p>
-            <p>
-              Dès l'arrivée, un service de concierge vous guide. Le salon commun invite à la lenteur, la
-              terrasse au grand ciel de Fès, et le Wi-Fi gratuit vous relie au monde — seulement quand
-              vous le souhaitez.
-            </p>
+            <p>{t.welcome.p1}</p>
+            <p>{t.welcome.p2}</p>
           </div>
           <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-4">
-            {HIGHLIGHTS.map((h) => (
-              <div key={h.label} className="flex flex-col items-start gap-2">
-                <span className="text-2xl">{h.icon}</span>
-                <span className="text-xs font-medium text-[color:var(--burnt)]/70">{h.label}</span>
+            {t.welcome.highlights.map((label, i) => (
+              <div key={label} className="flex flex-col items-start gap-2">
+                <span className="text-2xl">{HIGHLIGHT_ICONS[i]}</span>
+                <span className="text-xs font-medium text-[color:var(--burnt)]/70">{label}</span>
               </div>
             ))}
           </div>
@@ -405,71 +453,34 @@ function Welcome() {
   );
 }
 
-const ROOMS = [
-  {
-    name: "Chambre Double",
-    img: roomDouble,
-    tagline: "Pour deux, ou pour soi.",
-    desc: "Une bulle intime avec vue sur le patio.",
-    features: [
-      "Salle de bains privative",
-      "Douche",
-      "Sèche-cheveux",
-      "Articles de toilette gratuits",
-      "Serviettes et linge de lit fournis",
-      "Climatisation",
-      "Chauffage",
-      "TV écran plat",
-    ],
-  },
-  {
-    name: "Chambre Triple",
-    img: roomTriple,
-    tagline: "L'équilibre parfait.",
-    desc: "Pour un petit groupe d'amis ou une famille resserrée.",
-    features: [
-      "Tous les équipements de la Double",
-      "Lit d'appoint sur demande (gratuit, selon disponibilité)",
-    ],
-  },
-  {
-    name: "Chambre Quadruple",
-    img: roomQuad,
-    tagline: "Le riad s'ouvre plus grand.",
-    desc: "Pour vous accueillir à quatre, sans compromis sur le confort.",
-    features: [
-      "Tous les équipements de la Double",
-      "Espace familial généreux",
-    ],
-  },
-];
+const ROOM_IMAGES = [roomDouble, roomTriple, roomQuad];
 
 function Rooms() {
+  const { t } = useT();
+  const { withRoom } = useWhatsAppUrl();
   return (
     <section id="chambres" className="relative bg-[color:var(--burnt)] py-24 text-[color:var(--ivory)] md:py-32">
       <div className="mx-auto max-w-7xl px-6">
         <div className="reveal mx-auto max-w-2xl text-center">
           <p className="mb-4 text-xs font-medium uppercase tracking-[0.25em] text-[color:var(--gold)]">
-            Chambres
+            {t.rooms.eyebrow}
           </p>
           <h2 className="font-serif text-4xl leading-tight md:text-5xl">
-            Des chambres pensées comme des cocons
+            {t.rooms.title}
           </h2>
           <p className="mt-6 text-base leading-relaxed text-[color:var(--ivory)]/70">
-            Chaque hébergement s'ouvre sur un patio et se ferme sur un sommeil profond. Salle de bains
-            privative, linge choisi avec soin, climatisation discrète : le confort ici ne se voit pas, il
-            se ressent.
+            {t.rooms.intro}
           </p>
         </div>
         <div className="mt-16 grid gap-8 md:grid-cols-3">
-          {ROOMS.map((r) => (
+          {t.rooms.list.map((r, i) => (
             <article
               key={r.name}
               className="reveal group flex flex-col overflow-hidden rounded-2xl bg-[color:var(--ivory)]/5 backdrop-blur"
             >
               <div className="hover-zoom aspect-[4/3]">
                 <img
-                  src={r.img}
+                  src={ROOM_IMAGES[i]}
                   alt={r.name}
                   loading="lazy"
                   className="h-full w-full object-cover"
@@ -489,12 +500,12 @@ function Rooms() {
                 </ul>
                 <div className="mt-6 pt-6 border-t border-[color:var(--ivory)]/10">
                   <a
-                    href={buildWhatsAppUrl({ room: r.name })}
+                    href={withRoom(r.name)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-sm font-medium text-[color:var(--gold)] transition-colors hover:text-[color:var(--ivory)]"
                   >
-                    Réserver maintenant →
+                    {t.cta.bookShort}
                   </a>
                 </div>
               </div>
@@ -506,38 +517,26 @@ function Rooms() {
   );
 }
 
-const MEAL_BADGES = [
-  "Buffet", "À la carte", "Continental", "Végétarien", "Végétalien",
-  "Halal", "Sans gluten", "Casher", "Menus enfants",
-];
-
 function Restaurant() {
+  const { t } = useT();
+  const [title1, title2] = t.restaurant.title.split("\n");
   return (
     <section id="restaurant" className="relative py-24 md:py-32">
       <div className="mx-auto max-w-7xl px-6">
         <div className="grid gap-12 md:grid-cols-5 md:items-center">
           <div className="reveal md:col-span-2">
             <p className="mb-4 text-xs font-medium uppercase tracking-[0.25em] text-[color:var(--terracotta)]">
-              Restaurant & petit-déjeuner
+              {t.restaurant.eyebrow}
             </p>
             <h2 className="font-serif text-4xl leading-tight text-[color:var(--burnt)] md:text-5xl">
-              La table,<br /> avant tout
+              {title1}<br /> {title2}
             </h2>
             <div className="mt-8 space-y-5 text-[color:var(--burnt)]/80">
-              <p>
-                On ne visite pas Fès sans s'attabler. Nos 2 restaurants proposent une cuisine marocaine
-                généreuse — tajines mijotés, pastillas, épices choisies — avec des options végétariennes,
-                halal et casher pour que personne ne reste sur sa faim.
-              </p>
-              <p>
-                Le matin commence en douceur avec un petit-déjeuner plébiscité par nos clients (8,1/10) :
-                buffet, à la carte ou continental, décliné en versions anglaise/irlandaise complète,
-                végétarienne, végétalienne, halal, sans gluten, casher ou américaine. Un café coule déjà en
-                cuisine, et les enfants ont leur propre menu.
-              </p>
+              <p>{t.restaurant.p1}</p>
+              <p>{t.restaurant.p2}</p>
             </div>
             <div className="mt-8 flex flex-wrap gap-2">
-              {MEAL_BADGES.map((b) => (
+              {t.restaurant.badges.map((b) => (
                 <span
                   key={b}
                   className="rounded-full border border-[color:var(--terracotta)]/30 bg-[color:var(--terracotta)]/5 px-3 py-1 text-xs text-[color:var(--terracotta)]"
@@ -581,79 +580,22 @@ function Restaurant() {
   );
 }
 
-const AMENITIES = [
-  {
-    title: "Bien-être & détente",
-    items: [
-      "Terrasse",
-      "Salon commun",
-      "Parasols",
-      "Climatisation",
-      "Chauffage",
-      "Salon de coiffure/institut de beauté",
-    ],
-  },
-  {
-    title: "Activités (en supplément)",
-    items: [
-      "Location de vélos",
-      "Cours de cuisine",
-      "Visite culturelle locale",
-      "Balades à pied",
-    ],
-  },
-  {
-    title: "Services",
-    items: [
-      "Service de concierge",
-      "Bagagerie",
-      "Bureau d'excursions",
-      "Service de change",
-      "Blanchisserie",
-      "Pressing",
-      "Nettoyage à sec",
-      "Enregistrement/départ privé",
-    ],
-  },
-  {
-    title: "Sécurité",
-    items: [
-      "Sécurité 24h/24",
-      "Caméras de surveillance",
-      "Détecteurs de fumée et de monoxyde de carbone",
-      "Extincteurs",
-      "Clés d'accès",
-    ],
-  },
-  {
-    title: "Pratique",
-    items: [
-      "Parking à proximité (2€/jour)",
-      "Navette aéroport (en supplément)",
-      "Animaux acceptés, sans supplément",
-      "Supérette sur place",
-    ],
-  },
-  {
-    title: "Langues parlées",
-    items: ["🇲🇦 Arabe", "🇬🇧 Anglais", "🇪🇸 Espagnol", "🇫🇷 Français"],
-  },
-];
-
 function Amenities() {
+  const { t } = useT();
+  const [title1, title2] = t.amenities.title.split("\n");
   return (
     <section id="equipements" className="relative bg-[color:var(--ivory)] py-24 md:py-32">
       <div className="mx-auto max-w-7xl px-6">
         <div className="reveal mx-auto max-w-2xl text-center">
           <p className="mb-4 text-xs font-medium uppercase tracking-[0.25em] text-[color:var(--terracotta)]">
-            Équipements
+            {t.amenities.eyebrow}
           </p>
           <h2 className="font-serif text-4xl leading-tight text-[color:var(--burnt)] md:text-5xl">
-            Tout ce qu'il faut,<br /> rien de superflu
+            {title1}<br /> {title2}
           </h2>
         </div>
         <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {AMENITIES.map((group) => (
+          {t.amenities.groups.map((group) => (
             <div
               key={group.title}
               className="reveal rounded-2xl border border-[color:var(--gold)]/30 bg-white/50 p-8 backdrop-blur"
@@ -675,33 +617,21 @@ function Amenities() {
   );
 }
 
-const INFOS = [
-  ["Arrivée", "de 14h00 à 00h00 (merci de prévenir à l'avance)"],
-  ["Départ", "de 01h00 à 12h00"],
-  ["Enfants", "bienvenue à partir de 13 ans"],
-  ["Lits d'appoint", "gratuits, sur demande et selon disponibilité — pas de lits bébé"],
-  ["Heures de silence", "08h00 – 22h00"],
-  ["Fumeurs", "établissement non-fumeurs"],
-  ["Animaux", "bienvenus, sans supplément"],
-  ["Groupes", "au-delà de 3 chambres, conditions particulières"],
-  ["Paiement", "Visa, Mastercard, Amex, Diners, JCB, Maestro, Discover, UnionPay, espèces"],
-  ["Annulation", "conditions variables selon le type d'hébergement"],
-];
-
 function PracticalInfo() {
+  const { t } = useT();
   return (
     <section className="relative py-24 md:py-32">
       <div className="mx-auto max-w-5xl px-6">
         <div className="reveal mx-auto max-w-2xl text-center">
           <p className="mb-4 text-xs font-medium uppercase tracking-[0.25em] text-[color:var(--terracotta)]">
-            Infos pratiques
+            {t.practical.eyebrow}
           </p>
           <h2 className="font-serif text-4xl leading-tight text-[color:var(--burnt)] md:text-5xl">
-            Bon à savoir avant de venir
+            {t.practical.title}
           </h2>
         </div>
         <dl className="reveal mt-16 divide-y divide-[color:var(--gold)]/30 border-y border-[color:var(--gold)]/30">
-          {INFOS.map(([k, v]) => (
+          {t.practical.rows.map(([k, v]) => (
             <div key={k} className="grid gap-2 py-5 md:grid-cols-4 md:gap-6">
               <dt className="font-serif text-lg text-[color:var(--burnt)]">{k}</dt>
               <dd className="text-sm text-[color:var(--burnt)]/75 md:col-span-3">{v}</dd>
@@ -713,35 +643,25 @@ function PracticalInfo() {
   );
 }
 
-const DISTANCES = [
-  ["Place Batha", "200 m"],
-  ["Medersa Bouanania", "400 m"],
-  ["Bab Bou Jeloud", "500 m"],
-  ["Karaouiyne", "1 km"],
-  ["Palais royal de Fès", "1,8 km"],
-  ["Gare de Fès", "3,5 km"],
-  ["Aéroport Fès-Saïss", "17 km"],
-];
-
 function Location() {
+  const { t } = useT();
+  const [title1, title2] = t.location.title.split("\n");
   return (
     <section id="localisation" className="relative bg-[color:var(--majorelle)] py-24 text-[color:var(--ivory)] md:py-32">
       <div className="mx-auto max-w-7xl px-6">
         <div className="grid gap-12 md:grid-cols-2 md:items-center md:gap-16">
           <div className="reveal">
             <p className="mb-4 text-xs font-medium uppercase tracking-[0.25em] text-[color:var(--gold)]">
-              Localisation
+              {t.location.eyebrow}
             </p>
             <h2 className="font-serif text-4xl leading-tight md:text-5xl">
-              Au cœur de tout,<br /> loin du bruit
+              {title1}<br /> {title2}
             </h2>
             <p className="mt-6 text-[color:var(--ivory)]/75">
-              Le Palais royal de Fès à 1,8 km. La Place Batha à 200 mètres. La Medersa Bouanania à 400 mètres.
-              Bab Bou Jeloud à 500 mètres. La Karaouiyne à 1 km. La gare de Fès à 3,5 km. L'aéroport de
-              Fès-Saïss à 17 km.
+              {t.location.intro}
             </p>
             <ul className="mt-8 space-y-3">
-              {DISTANCES.map(([place, dist]) => (
+              {t.location.distances.map(([place, dist]) => (
                 <li
                   key={place}
                   className="flex items-center justify-between border-b border-[color:var(--ivory)]/15 pb-3 text-sm"
@@ -752,7 +672,7 @@ function Location() {
               ))}
             </ul>
             <p className="mt-6 text-xs text-[color:var(--ivory)]/50">
-              Distances calculées avec © OpenStreetMap.
+              {t.location.osm}
             </p>
           </div>
           <div className="reveal overflow-hidden rounded-2xl border border-[color:var(--ivory)]/10 shadow-2xl">
@@ -770,6 +690,7 @@ function Location() {
 }
 
 function Reviews() {
+  const { t } = useT();
   return (
     <section className="relative py-24 md:py-32">
       <div className="mx-auto max-w-6xl px-6">
@@ -779,7 +700,7 @@ function Reviews() {
               9,1<span className="text-4xl text-[color:var(--burnt)]/40 md:text-5xl">/10</span>
             </div>
             <p className="mt-3 text-sm uppercase tracking-widest text-[color:var(--burnt)]/60">
-              Note donnée par les couples pour un séjour à deux
+              {t.reviews.couples}
             </p>
           </div>
           <div className="text-center md:text-left">
@@ -787,13 +708,13 @@ function Reviews() {
               8,1<span className="text-4xl text-[color:var(--burnt)]/40 md:text-5xl">/10</span>
             </div>
             <p className="mt-3 text-sm uppercase tracking-widest text-[color:var(--burnt)]/60">
-              Note du petit-déjeuner
+              {t.reviews.breakfast}
             </p>
           </div>
         </div>
         <blockquote className="reveal mt-20 mx-auto max-w-3xl text-center">
           <p className="font-serif text-2xl italic leading-relaxed text-[color:var(--burnt)] md:text-3xl">
-            « Le genre d'adresse qu'on garde pour soi... jusqu'à ce qu'on ait envie d'en parler. »
+            {t.reviews.quote}
           </p>
         </blockquote>
       </div>
@@ -802,6 +723,7 @@ function Reviews() {
 }
 
 function FinalCta() {
+  const { t } = useT();
   return (
     <section id="contact" className="relative overflow-hidden bg-[color:var(--terracotta)] py-24 md:py-32">
       <img
@@ -812,13 +734,13 @@ function FinalCta() {
       />
       <div className="relative mx-auto max-w-3xl px-6 text-center text-[color:var(--ivory)]">
         <h2 className="font-serif text-4xl leading-tight md:text-6xl">
-          Le prochain chapitre de votre séjour à Fès commence ici
+          {t.finalCta.title}
         </h2>
         <p className="mt-6 text-lg text-[color:var(--ivory)]/85">
-          Places limitées selon la saison — réservez dès maintenant sur WhatsApp.
+          {t.finalCta.subtitle}
         </p>
         <div className="mt-10">
-          <CtaButton>Réserver maintenant</CtaButton>
+          <CtaButton>{t.cta.book}</CtaButton>
         </div>
       </div>
     </section>
@@ -826,6 +748,8 @@ function FinalCta() {
 }
 
 function Footer() {
+  const { t } = useT();
+  const NAV = useNav();
   return (
     <footer className="bg-[color:var(--burnt)] py-16 text-[color:var(--ivory)]/70">
       <div className="mx-auto max-w-7xl px-6">
@@ -835,12 +759,12 @@ function Footer() {
               Riad <span className="text-[color:var(--gold)]">Anis</span> Fes
             </div>
             <p className="mt-4 text-sm">
-              Médina de Fès, Maroc<br />
-              Licence n° 00000XX0000
+              {t.footer.address}<br />
+              {t.footer.license}
             </p>
           </div>
           <div>
-            <p className="mb-4 text-xs uppercase tracking-widest text-[color:var(--gold)]">Navigation</p>
+            <p className="mb-4 text-xs uppercase tracking-widest text-[color:var(--gold)]">{t.footer.nav}</p>
             <ul className="space-y-2 text-sm">
               {NAV.map((n) => (
                 <li key={n.href}>
@@ -852,7 +776,7 @@ function Footer() {
             </ul>
           </div>
           <div>
-            <p className="mb-4 text-xs uppercase tracking-widest text-[color:var(--gold)]">Suivez-nous</p>
+            <p className="mb-4 text-xs uppercase tracking-widest text-[color:var(--gold)]">{t.footer.follow}</p>
             <div className="flex gap-4">
               {["Instagram", "Facebook", "TripAdvisor"].map((s) => (
                 <a key={s} href="#" aria-label={s} className="text-sm hover:text-[color:var(--ivory)]">
@@ -861,12 +785,12 @@ function Footer() {
               ))}
             </div>
             <p className="mt-6 text-xs text-[color:var(--ivory)]/50">
-              Politique d'annulation et de prépaiement variable selon l'hébergement choisi.
+              {t.footer.cancel}
             </p>
           </div>
         </div>
         <div className="mt-12 border-t border-[color:var(--ivory)]/10 pt-6 text-center text-xs text-[color:var(--ivory)]/50">
-          © {new Date().getFullYear()} Riad Anis Fes. Tous droits réservés.
+          © {new Date().getFullYear()} Riad Anis Fes. {t.footer.rights}
         </div>
       </div>
     </footer>
@@ -882,9 +806,21 @@ function Divider() {
 }
 
 function Index() {
-  useReveal();
   return (
-    <div className="min-h-screen bg-[color:var(--ivory)] text-[color:var(--burnt)]">
+    <LanguageProvider>
+      <IndexInner />
+    </LanguageProvider>
+  );
+}
+
+function IndexInner() {
+  useReveal();
+  const { lang } = useT();
+  return (
+    <div
+      dir={lang === "ar" ? "rtl" : "ltr"}
+      className="min-h-screen bg-[color:var(--ivory)] text-[color:var(--burnt)]"
+    >
       <Header />
       <main>
         <Hero />
