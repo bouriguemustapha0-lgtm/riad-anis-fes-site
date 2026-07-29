@@ -411,46 +411,30 @@ function Hero() {
   );
 }
 
-const HIGHLIGHTS = [
-  { icon: "🚐", label: "Navette aéroport" },
-  { icon: "🚭", label: "Non-fumeurs" },
-  { icon: "📶", label: "Wi-Fi gratuit" },
-  { icon: "🅿️", label: "Parking à proximité" },
-  { icon: "🍽️", label: "2 restaurants" },
-  { icon: "👨‍👩‍👧", label: "Chambres familiales" },
-  { icon: "☀️", label: "Terrasse" },
-  { icon: "🔥", label: "Chauffage" },
-];
+const HIGHLIGHT_ICONS = ["🚐", "🚭", "📶", "🅿️", "🍽️", "👨‍👩‍👧", "☀️", "🔥"];
 
 function Welcome() {
+  const { t } = useT();
+  const [title1, title2] = t.welcome.title.split("\n");
   return (
     <section className="relative py-24 md:py-32">
       <div className="mx-auto grid max-w-7xl gap-12 px-6 md:grid-cols-2 md:items-center md:gap-16">
         <div className="reveal">
           <p className="mb-4 text-xs font-medium uppercase tracking-[0.25em] text-[color:var(--terracotta)]">
-            Bienvenue
+            {t.welcome.eyebrow}
           </p>
           <h2 className="font-serif text-4xl leading-tight text-[color:var(--burnt)] md:text-5xl">
-            L'âme de Fès,<br /> sans le bruit
+            {title1}<br /> {title2}
           </h2>
           <div className="mt-8 space-y-5 text-base leading-relaxed text-[color:var(--burnt)]/80">
-            <p>
-              Ici, on ne réserve pas une chambre. On s'offre une parenthèse. Le Riad Anis Fes se love dans
-              les ruelles de Fès, à seulement 200 mètres de la Place Batha, 400 mètres de la Medersa
-              Bouanania et 500 mètres de la porte emblématique de Bab Bou Jeloud. Le Palais royal veille à
-              1,8 km, la Karaouiyne — la plus vieille université du monde — n'est qu'à un kilomètre.
-            </p>
-            <p>
-              Dès l'arrivée, un service de concierge vous guide. Le salon commun invite à la lenteur, la
-              terrasse au grand ciel de Fès, et le Wi-Fi gratuit vous relie au monde — seulement quand
-              vous le souhaitez.
-            </p>
+            <p>{t.welcome.p1}</p>
+            <p>{t.welcome.p2}</p>
           </div>
           <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-4">
-            {HIGHLIGHTS.map((h) => (
-              <div key={h.label} className="flex flex-col items-start gap-2">
-                <span className="text-2xl">{h.icon}</span>
-                <span className="text-xs font-medium text-[color:var(--burnt)]/70">{h.label}</span>
+            {t.welcome.highlights.map((label, i) => (
+              <div key={label} className="flex flex-col items-start gap-2">
+                <span className="text-2xl">{HIGHLIGHT_ICONS[i]}</span>
+                <span className="text-xs font-medium text-[color:var(--burnt)]/70">{label}</span>
               </div>
             ))}
           </div>
@@ -468,71 +452,34 @@ function Welcome() {
   );
 }
 
-const ROOMS = [
-  {
-    name: "Chambre Double",
-    img: roomDouble,
-    tagline: "Pour deux, ou pour soi.",
-    desc: "Une bulle intime avec vue sur le patio.",
-    features: [
-      "Salle de bains privative",
-      "Douche",
-      "Sèche-cheveux",
-      "Articles de toilette gratuits",
-      "Serviettes et linge de lit fournis",
-      "Climatisation",
-      "Chauffage",
-      "TV écran plat",
-    ],
-  },
-  {
-    name: "Chambre Triple",
-    img: roomTriple,
-    tagline: "L'équilibre parfait.",
-    desc: "Pour un petit groupe d'amis ou une famille resserrée.",
-    features: [
-      "Tous les équipements de la Double",
-      "Lit d'appoint sur demande (gratuit, selon disponibilité)",
-    ],
-  },
-  {
-    name: "Chambre Quadruple",
-    img: roomQuad,
-    tagline: "Le riad s'ouvre plus grand.",
-    desc: "Pour vous accueillir à quatre, sans compromis sur le confort.",
-    features: [
-      "Tous les équipements de la Double",
-      "Espace familial généreux",
-    ],
-  },
-];
+const ROOM_IMAGES = [roomDouble, roomTriple, roomQuad];
 
 function Rooms() {
+  const { t } = useT();
+  const { withRoom } = useWhatsAppUrl();
   return (
     <section id="chambres" className="relative bg-[color:var(--burnt)] py-24 text-[color:var(--ivory)] md:py-32">
       <div className="mx-auto max-w-7xl px-6">
         <div className="reveal mx-auto max-w-2xl text-center">
           <p className="mb-4 text-xs font-medium uppercase tracking-[0.25em] text-[color:var(--gold)]">
-            Chambres
+            {t.rooms.eyebrow}
           </p>
           <h2 className="font-serif text-4xl leading-tight md:text-5xl">
-            Des chambres pensées comme des cocons
+            {t.rooms.title}
           </h2>
           <p className="mt-6 text-base leading-relaxed text-[color:var(--ivory)]/70">
-            Chaque hébergement s'ouvre sur un patio et se ferme sur un sommeil profond. Salle de bains
-            privative, linge choisi avec soin, climatisation discrète : le confort ici ne se voit pas, il
-            se ressent.
+            {t.rooms.intro}
           </p>
         </div>
         <div className="mt-16 grid gap-8 md:grid-cols-3">
-          {ROOMS.map((r) => (
+          {t.rooms.list.map((r, i) => (
             <article
               key={r.name}
               className="reveal group flex flex-col overflow-hidden rounded-2xl bg-[color:var(--ivory)]/5 backdrop-blur"
             >
               <div className="hover-zoom aspect-[4/3]">
                 <img
-                  src={r.img}
+                  src={ROOM_IMAGES[i]}
                   alt={r.name}
                   loading="lazy"
                   className="h-full w-full object-cover"
@@ -552,12 +499,12 @@ function Rooms() {
                 </ul>
                 <div className="mt-6 pt-6 border-t border-[color:var(--ivory)]/10">
                   <a
-                    href={buildWhatsAppUrl({ room: r.name })}
+                    href={withRoom(r.name)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-sm font-medium text-[color:var(--gold)] transition-colors hover:text-[color:var(--ivory)]"
                   >
-                    Réserver maintenant →
+                    {t.cta.bookShort}
                   </a>
                 </div>
               </div>
