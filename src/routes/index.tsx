@@ -228,7 +228,9 @@ function CtaButton({ children, variant = "primary", className = "" }: { children
       : "border border-current text-current hover:bg-current/10";
   return (
     <a
-      href="#contact"
+      href={WHATSAPP_URL}
+      target="_blank"
+      rel="noopener noreferrer"
       className={`${base} ${styles} ${className}`}
     >
       {children}
