@@ -579,79 +579,22 @@ function Restaurant() {
   );
 }
 
-const AMENITIES = [
-  {
-    title: "Bien-être & détente",
-    items: [
-      "Terrasse",
-      "Salon commun",
-      "Parasols",
-      "Climatisation",
-      "Chauffage",
-      "Salon de coiffure/institut de beauté",
-    ],
-  },
-  {
-    title: "Activités (en supplément)",
-    items: [
-      "Location de vélos",
-      "Cours de cuisine",
-      "Visite culturelle locale",
-      "Balades à pied",
-    ],
-  },
-  {
-    title: "Services",
-    items: [
-      "Service de concierge",
-      "Bagagerie",
-      "Bureau d'excursions",
-      "Service de change",
-      "Blanchisserie",
-      "Pressing",
-      "Nettoyage à sec",
-      "Enregistrement/départ privé",
-    ],
-  },
-  {
-    title: "Sécurité",
-    items: [
-      "Sécurité 24h/24",
-      "Caméras de surveillance",
-      "Détecteurs de fumée et de monoxyde de carbone",
-      "Extincteurs",
-      "Clés d'accès",
-    ],
-  },
-  {
-    title: "Pratique",
-    items: [
-      "Parking à proximité (2€/jour)",
-      "Navette aéroport (en supplément)",
-      "Animaux acceptés, sans supplément",
-      "Supérette sur place",
-    ],
-  },
-  {
-    title: "Langues parlées",
-    items: ["🇲🇦 Arabe", "🇬🇧 Anglais", "🇪🇸 Espagnol", "🇫🇷 Français"],
-  },
-];
-
 function Amenities() {
+  const { t } = useT();
+  const [title1, title2] = t.amenities.title.split("\n");
   return (
     <section id="equipements" className="relative bg-[color:var(--ivory)] py-24 md:py-32">
       <div className="mx-auto max-w-7xl px-6">
         <div className="reveal mx-auto max-w-2xl text-center">
           <p className="mb-4 text-xs font-medium uppercase tracking-[0.25em] text-[color:var(--terracotta)]">
-            Équipements
+            {t.amenities.eyebrow}
           </p>
           <h2 className="font-serif text-4xl leading-tight text-[color:var(--burnt)] md:text-5xl">
-            Tout ce qu'il faut,<br /> rien de superflu
+            {title1}<br /> {title2}
           </h2>
         </div>
         <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {AMENITIES.map((group) => (
+          {t.amenities.groups.map((group) => (
             <div
               key={group.title}
               className="reveal rounded-2xl border border-[color:var(--gold)]/30 bg-white/50 p-8 backdrop-blur"
@@ -673,33 +616,21 @@ function Amenities() {
   );
 }
 
-const INFOS = [
-  ["Arrivée", "de 14h00 à 00h00 (merci de prévenir à l'avance)"],
-  ["Départ", "de 01h00 à 12h00"],
-  ["Enfants", "bienvenue à partir de 13 ans"],
-  ["Lits d'appoint", "gratuits, sur demande et selon disponibilité — pas de lits bébé"],
-  ["Heures de silence", "08h00 – 22h00"],
-  ["Fumeurs", "établissement non-fumeurs"],
-  ["Animaux", "bienvenus, sans supplément"],
-  ["Groupes", "au-delà de 3 chambres, conditions particulières"],
-  ["Paiement", "Visa, Mastercard, Amex, Diners, JCB, Maestro, Discover, UnionPay, espèces"],
-  ["Annulation", "conditions variables selon le type d'hébergement"],
-];
-
 function PracticalInfo() {
+  const { t } = useT();
   return (
     <section className="relative py-24 md:py-32">
       <div className="mx-auto max-w-5xl px-6">
         <div className="reveal mx-auto max-w-2xl text-center">
           <p className="mb-4 text-xs font-medium uppercase tracking-[0.25em] text-[color:var(--terracotta)]">
-            Infos pratiques
+            {t.practical.eyebrow}
           </p>
           <h2 className="font-serif text-4xl leading-tight text-[color:var(--burnt)] md:text-5xl">
-            Bon à savoir avant de venir
+            {t.practical.title}
           </h2>
         </div>
         <dl className="reveal mt-16 divide-y divide-[color:var(--gold)]/30 border-y border-[color:var(--gold)]/30">
-          {INFOS.map(([k, v]) => (
+          {t.practical.rows.map(([k, v]) => (
             <div key={k} className="grid gap-2 py-5 md:grid-cols-4 md:gap-6">
               <dt className="font-serif text-lg text-[color:var(--burnt)]">{k}</dt>
               <dd className="text-sm text-[color:var(--burnt)]/75 md:col-span-3">{v}</dd>
@@ -711,35 +642,25 @@ function PracticalInfo() {
   );
 }
 
-const DISTANCES = [
-  ["Place Batha", "200 m"],
-  ["Medersa Bouanania", "400 m"],
-  ["Bab Bou Jeloud", "500 m"],
-  ["Karaouiyne", "1 km"],
-  ["Palais royal de Fès", "1,8 km"],
-  ["Gare de Fès", "3,5 km"],
-  ["Aéroport Fès-Saïss", "17 km"],
-];
-
 function Location() {
+  const { t } = useT();
+  const [title1, title2] = t.location.title.split("\n");
   return (
     <section id="localisation" className="relative bg-[color:var(--majorelle)] py-24 text-[color:var(--ivory)] md:py-32">
       <div className="mx-auto max-w-7xl px-6">
         <div className="grid gap-12 md:grid-cols-2 md:items-center md:gap-16">
           <div className="reveal">
             <p className="mb-4 text-xs font-medium uppercase tracking-[0.25em] text-[color:var(--gold)]">
-              Localisation
+              {t.location.eyebrow}
             </p>
             <h2 className="font-serif text-4xl leading-tight md:text-5xl">
-              Au cœur de tout,<br /> loin du bruit
+              {title1}<br /> {title2}
             </h2>
             <p className="mt-6 text-[color:var(--ivory)]/75">
-              Le Palais royal de Fès à 1,8 km. La Place Batha à 200 mètres. La Medersa Bouanania à 400 mètres.
-              Bab Bou Jeloud à 500 mètres. La Karaouiyne à 1 km. La gare de Fès à 3,5 km. L'aéroport de
-              Fès-Saïss à 17 km.
+              {t.location.intro}
             </p>
             <ul className="mt-8 space-y-3">
-              {DISTANCES.map(([place, dist]) => (
+              {t.location.distances.map(([place, dist]) => (
                 <li
                   key={place}
                   className="flex items-center justify-between border-b border-[color:var(--ivory)]/15 pb-3 text-sm"
@@ -750,7 +671,7 @@ function Location() {
               ))}
             </ul>
             <p className="mt-6 text-xs text-[color:var(--ivory)]/50">
-              Distances calculées avec © OpenStreetMap.
+              {t.location.osm}
             </p>
           </div>
           <div className="reveal overflow-hidden rounded-2xl border border-[color:var(--ivory)]/10 shadow-2xl">
@@ -768,6 +689,7 @@ function Location() {
 }
 
 function Reviews() {
+  const { t } = useT();
   return (
     <section className="relative py-24 md:py-32">
       <div className="mx-auto max-w-6xl px-6">
@@ -777,7 +699,7 @@ function Reviews() {
               9,1<span className="text-4xl text-[color:var(--burnt)]/40 md:text-5xl">/10</span>
             </div>
             <p className="mt-3 text-sm uppercase tracking-widest text-[color:var(--burnt)]/60">
-              Note donnée par les couples pour un séjour à deux
+              {t.reviews.couples}
             </p>
           </div>
           <div className="text-center md:text-left">
@@ -785,13 +707,13 @@ function Reviews() {
               8,1<span className="text-4xl text-[color:var(--burnt)]/40 md:text-5xl">/10</span>
             </div>
             <p className="mt-3 text-sm uppercase tracking-widest text-[color:var(--burnt)]/60">
-              Note du petit-déjeuner
+              {t.reviews.breakfast}
             </p>
           </div>
         </div>
         <blockquote className="reveal mt-20 mx-auto max-w-3xl text-center">
           <p className="font-serif text-2xl italic leading-relaxed text-[color:var(--burnt)] md:text-3xl">
-            « Le genre d'adresse qu'on garde pour soi... jusqu'à ce qu'on ait envie d'en parler. »
+            {t.reviews.quote}
           </p>
         </blockquote>
       </div>
@@ -800,6 +722,7 @@ function Reviews() {
 }
 
 function FinalCta() {
+  const { t } = useT();
   return (
     <section id="contact" className="relative overflow-hidden bg-[color:var(--terracotta)] py-24 md:py-32">
       <img
@@ -810,13 +733,13 @@ function FinalCta() {
       />
       <div className="relative mx-auto max-w-3xl px-6 text-center text-[color:var(--ivory)]">
         <h2 className="font-serif text-4xl leading-tight md:text-6xl">
-          Le prochain chapitre de votre séjour à Fès commence ici
+          {t.finalCta.title}
         </h2>
         <p className="mt-6 text-lg text-[color:var(--ivory)]/85">
-          Places limitées selon la saison — réservez dès maintenant sur WhatsApp.
+          {t.finalCta.subtitle}
         </p>
         <div className="mt-10">
-          <CtaButton>Réserver maintenant</CtaButton>
+          <CtaButton>{t.cta.book}</CtaButton>
         </div>
       </div>
     </section>
@@ -824,6 +747,8 @@ function FinalCta() {
 }
 
 function Footer() {
+  const { t } = useT();
+  const NAV = useNav();
   return (
     <footer className="bg-[color:var(--burnt)] py-16 text-[color:var(--ivory)]/70">
       <div className="mx-auto max-w-7xl px-6">
@@ -833,12 +758,12 @@ function Footer() {
               Riad <span className="text-[color:var(--gold)]">Anis</span> Fes
             </div>
             <p className="mt-4 text-sm">
-              Médina de Fès, Maroc<br />
-              Licence n° 00000XX0000
+              {t.footer.address}<br />
+              {t.footer.license}
             </p>
           </div>
           <div>
-            <p className="mb-4 text-xs uppercase tracking-widest text-[color:var(--gold)]">Navigation</p>
+            <p className="mb-4 text-xs uppercase tracking-widest text-[color:var(--gold)]">{t.footer.nav}</p>
             <ul className="space-y-2 text-sm">
               {NAV.map((n) => (
                 <li key={n.href}>
@@ -850,7 +775,7 @@ function Footer() {
             </ul>
           </div>
           <div>
-            <p className="mb-4 text-xs uppercase tracking-widest text-[color:var(--gold)]">Suivez-nous</p>
+            <p className="mb-4 text-xs uppercase tracking-widest text-[color:var(--gold)]">{t.footer.follow}</p>
             <div className="flex gap-4">
               {["Instagram", "Facebook", "TripAdvisor"].map((s) => (
                 <a key={s} href="#" aria-label={s} className="text-sm hover:text-[color:var(--ivory)]">
@@ -859,12 +784,12 @@ function Footer() {
               ))}
             </div>
             <p className="mt-6 text-xs text-[color:var(--ivory)]/50">
-              Politique d'annulation et de prépaiement variable selon l'hébergement choisi.
+              {t.footer.cancel}
             </p>
           </div>
         </div>
         <div className="mt-12 border-t border-[color:var(--ivory)]/10 pt-6 text-center text-xs text-[color:var(--ivory)]/50">
-          © {new Date().getFullYear()} Riad Anis Fes. Tous droits réservés.
+          © {new Date().getFullYear()} Riad Anis Fes. {t.footer.rights}
         </div>
       </div>
     </footer>
