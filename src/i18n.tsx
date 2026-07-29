@@ -319,7 +319,7 @@ const en: Dict = {
     message: "Message (optional)",
     messagePh: "Any special request?",
     submit: "Book on WhatsApp",
-    requiredHint: "Name and one contact (email or phone) required.",
+    requiredHint: "Full name is required.",
   },
   wa: {
     greetingSimple: "Hello Riad Anis Fes, I'd like to check availability for a stay.",
