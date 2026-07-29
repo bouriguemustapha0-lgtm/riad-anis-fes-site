@@ -52,6 +52,27 @@ type Dict = {
   };
   reviews: { couples: string; breakfast: string; quote: string };
   finalCta: { title: string; subtitle: string };
+  reservation: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    name: string;
+    namePh: string;
+    email: string;
+    emailPh: string;
+    phone: string;
+    phonePh: string;
+    checkIn: string;
+    checkOut: string;
+    guests: string;
+    guestsUnit: string;
+    room: string;
+    selectRoom: string;
+    message: string;
+    messagePh: string;
+    submit: string;
+    requiredHint: string;
+  };
   footer: { address: string; license: string; nav: string; follow: string; cancel: string; rights: string };
   gallery: { eyebrow: string; title: string };
   wa: {
@@ -156,6 +177,27 @@ const fr: Dict = {
     rights: "Tous droits réservés.",
   },
   gallery: { eyebrow: "Galerie", title: "Un aperçu, avant l'arrivée" },
+  reservation: {
+    eyebrow: "Réservation",
+    title: "Réservez votre séjour",
+    subtitle: "Remplissez ce court formulaire, nous vous répondons directement sur WhatsApp.",
+    name: "Nom complet",
+    namePh: "Votre nom",
+    email: "Email",
+    emailPh: "vous@exemple.com",
+    phone: "Téléphone",
+    phonePh: "+212 …",
+    checkIn: "Arrivée",
+    checkOut: "Départ",
+    guests: "Voyageurs",
+    guestsUnit: " pers.",
+    room: "Chambre souhaitée",
+    selectRoom: "Choisir une chambre",
+    message: "Message (optionnel)",
+    messagePh: "Une demande particulière ?",
+    submit: "Réserver sur WhatsApp",
+    requiredHint: "Nom et un moyen de contact (email ou téléphone) requis.",
+  },
   wa: {
     greetingSimple: "Bonjour Riad Anis Fes, je souhaite vérifier les disponibilités pour un séjour.",
     greetingHead: "Bonjour Riad Anis Fes,",
@@ -258,6 +300,27 @@ const en: Dict = {
     rights: "All rights reserved.",
   },
   gallery: { eyebrow: "Gallery", title: "A glimpse, before you arrive" },
+  reservation: {
+    eyebrow: "Booking",
+    title: "Book your stay",
+    subtitle: "Fill in this short form — we reply directly on WhatsApp.",
+    name: "Full name",
+    namePh: "Your name",
+    email: "Email",
+    emailPh: "you@example.com",
+    phone: "Phone",
+    phonePh: "+212 …",
+    checkIn: "Check-in",
+    checkOut: "Check-out",
+    guests: "Guests",
+    guestsUnit: " guests",
+    room: "Preferred room",
+    selectRoom: "Choose a room",
+    message: "Message (optional)",
+    messagePh: "Any special request?",
+    submit: "Book on WhatsApp",
+    requiredHint: "Name and one contact (email or phone) required.",
+  },
   wa: {
     greetingSimple: "Hello Riad Anis Fes, I'd like to check availability for a stay.",
     greetingHead: "Hello Riad Anis Fes,",
@@ -360,6 +423,27 @@ const es: Dict = {
     rights: "Todos los derechos reservados.",
   },
   gallery: { eyebrow: "Galería", title: "Un vistazo, antes de llegar" },
+  reservation: {
+    eyebrow: "Reserva",
+    title: "Reserve su estancia",
+    subtitle: "Rellene este breve formulario — le respondemos directamente por WhatsApp.",
+    name: "Nombre completo",
+    namePh: "Su nombre",
+    email: "Email",
+    emailPh: "usted@ejemplo.com",
+    phone: "Teléfono",
+    phonePh: "+212 …",
+    checkIn: "Llegada",
+    checkOut: "Salida",
+    guests: "Viajeros",
+    guestsUnit: " pers.",
+    room: "Habitación deseada",
+    selectRoom: "Elegir habitación",
+    message: "Mensaje (opcional)",
+    messagePh: "¿Alguna petición especial?",
+    submit: "Reservar por WhatsApp",
+    requiredHint: "Nombre y un medio de contacto (email o teléfono) obligatorios.",
+  },
   wa: {
     greetingSimple: "Hola Riad Anis Fes, me gustaría comprobar la disponibilidad para una estancia.",
     greetingHead: "Hola Riad Anis Fes,",
@@ -462,6 +546,27 @@ const ar: Dict = {
     rights: "جميع الحقوق محفوظة.",
   },
   gallery: { eyebrow: "معرض الصور", title: "لمحة قبل الوصول" },
+  reservation: {
+    eyebrow: "الحجز",
+    title: "احجز إقامتك",
+    subtitle: "املأ هذا النموذج القصير — نرد عليك مباشرة عبر واتساب.",
+    name: "الاسم الكامل",
+    namePh: "اسمك",
+    email: "البريد الإلكتروني",
+    emailPh: "you@example.com",
+    phone: "الهاتف",
+    phonePh: "+212 …",
+    checkIn: "الوصول",
+    checkOut: "المغادرة",
+    guests: "المسافرون",
+    guestsUnit: " ضيف",
+    room: "الغرفة المطلوبة",
+    selectRoom: "اختر غرفة",
+    message: "رسالة (اختياري)",
+    messagePh: "أي طلب خاص؟",
+    submit: "احجز عبر واتساب",
+    requiredHint: "الاسم ووسيلة اتصال واحدة (بريد أو هاتف) مطلوبة.",
+  },
   wa: {
     greetingSimple: "مرحباً رياض أنيس فاس، أودّ الاستفسار عن توفر إقامة.",
     greetingHead: "مرحباً رياض أنيس فاس،",
