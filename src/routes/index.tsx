@@ -505,14 +505,13 @@ function Rooms() {
                   ))}
                 </ul>
                 <div className="mt-6 pt-6 border-t border-[color:var(--ivory)]/10">
-                  <a
-                    href={withRoom(r.name)}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button
+                    type="button"
+                    onClick={() => goToReservation(r.name)}
                     className="inline-flex items-center gap-2 text-sm font-medium text-[color:var(--gold)] transition-colors hover:text-[color:var(--ivory)]"
                   >
                     {t.cta.bookShort}
-                  </a>
+                  </button>
                 </div>
               </div>
             </article>
