@@ -470,9 +470,13 @@ function Rooms() {
                 </ul>
                 <div className="mt-6 pt-6 border-t border-[color:var(--ivory)]/10">
                   <a
-                    href={WHATSAPP_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href={`#contact?room=${encodeURIComponent(r.name)}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const evt = new CustomEvent("prefill-room", { detail: r.name });
+                      window.dispatchEvent(evt);
+                      document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
+                    }}
                     className="inline-flex items-center gap-2 text-sm font-medium text-[color:var(--gold)] transition-colors hover:text-[color:var(--ivory)]"
                   >
                     BOOK NOW →
