@@ -235,7 +235,7 @@ function Header() {
           ))}
         </nav>
         <div className="hidden lg:block">
-          <CtaButton>Voir les disponibilités</CtaButton>
+          <CtaButton>BOOK NOW</CtaButton>
         </div>
         <button
           onClick={() => setOpen(!open)}
@@ -260,7 +260,7 @@ function Header() {
                 {n.label}
               </a>
             ))}
-            <CtaButton>Voir les disponibilités</CtaButton>
+            <CtaButton>BOOK NOW</CtaButton>
           </nav>
         </div>
       )}
@@ -289,7 +289,7 @@ function Hero() {
           à deux pas de la médina et du Palais royal.
         </p>
         <div className="mt-10">
-          <CtaButton>Voir les disponibilités</CtaButton>
+          <CtaButton>BOOK NOW</CtaButton>
         </div>
       </div>
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/70">
@@ -447,7 +447,7 @@ function Rooms() {
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-sm font-medium text-[color:var(--gold)] transition-colors hover:text-[color:var(--ivory)]"
                   >
-                    Vérifier la disponibilité →
+                    BOOK NOW →
                   </a>
                 </div>
               </div>
@@ -771,12 +771,7 @@ function FinalCta() {
           Places limitées selon la saison — vérifiez vos dates dès maintenant.
         </p>
         <div className="mt-10">
-          <a
-            href="mailto:contact@riadanisfes.com"
-            className="inline-flex items-center gap-3 rounded-full bg-[color:var(--ivory)] px-8 py-4 text-sm font-medium text-[color:var(--burnt)] transition-all hover:bg-[color:var(--gold)] hover:text-[color:var(--burnt)]"
-          >
-            Voir les disponibilités →
-          </a>
+          <CtaButton>BOOK NOW</CtaButton>
         </div>
       </div>
     </section>
