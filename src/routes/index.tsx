@@ -516,38 +516,26 @@ function Rooms() {
   );
 }
 
-const MEAL_BADGES = [
-  "Buffet", "À la carte", "Continental", "Végétarien", "Végétalien",
-  "Halal", "Sans gluten", "Casher", "Menus enfants",
-];
-
 function Restaurant() {
+  const { t } = useT();
+  const [title1, title2] = t.restaurant.title.split("\n");
   return (
     <section id="restaurant" className="relative py-24 md:py-32">
       <div className="mx-auto max-w-7xl px-6">
         <div className="grid gap-12 md:grid-cols-5 md:items-center">
           <div className="reveal md:col-span-2">
             <p className="mb-4 text-xs font-medium uppercase tracking-[0.25em] text-[color:var(--terracotta)]">
-              Restaurant & petit-déjeuner
+              {t.restaurant.eyebrow}
             </p>
             <h2 className="font-serif text-4xl leading-tight text-[color:var(--burnt)] md:text-5xl">
-              La table,<br /> avant tout
+              {title1}<br /> {title2}
             </h2>
             <div className="mt-8 space-y-5 text-[color:var(--burnt)]/80">
-              <p>
-                On ne visite pas Fès sans s'attabler. Nos 2 restaurants proposent une cuisine marocaine
-                généreuse — tajines mijotés, pastillas, épices choisies — avec des options végétariennes,
-                halal et casher pour que personne ne reste sur sa faim.
-              </p>
-              <p>
-                Le matin commence en douceur avec un petit-déjeuner plébiscité par nos clients (8,1/10) :
-                buffet, à la carte ou continental, décliné en versions anglaise/irlandaise complète,
-                végétarienne, végétalienne, halal, sans gluten, casher ou américaine. Un café coule déjà en
-                cuisine, et les enfants ont leur propre menu.
-              </p>
+              <p>{t.restaurant.p1}</p>
+              <p>{t.restaurant.p2}</p>
             </div>
             <div className="mt-8 flex flex-wrap gap-2">
-              {MEAL_BADGES.map((b) => (
+              {t.restaurant.badges.map((b) => (
                 <span
                   key={b}
                   className="rounded-full border border-[color:var(--terracotta)]/30 bg-[color:var(--terracotta)]/5 px-3 py-1 text-xs text-[color:var(--terracotta)]"
