@@ -98,6 +98,7 @@ const GALLERY: { src: string; alt: string }[] = [
 
 function Gallery() {
   const [open, setOpen] = useState<number | null>(null);
+  const { t } = useT();
   useEffect(() => {
     if (open === null) return;
     const onKey = (e: KeyboardEvent) => {
@@ -113,10 +114,10 @@ function Gallery() {
       <div className="mx-auto max-w-7xl px-6">
         <div className="reveal mx-auto max-w-2xl text-center">
           <p className="mb-4 text-xs font-medium uppercase tracking-[0.25em] text-[color:var(--terracotta)]">
-            Galerie
+            {t.gallery.eyebrow}
           </p>
           <h2 className="font-serif text-4xl leading-tight text-[color:var(--burnt)] md:text-5xl">
-            Un aperçu, avant l'arrivée
+            {t.gallery.title}
           </h2>
         </div>
         <div className="reveal mt-16 grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
@@ -805,9 +806,21 @@ function Divider() {
 }
 
 function Index() {
-  useReveal();
   return (
-    <div className="min-h-screen bg-[color:var(--ivory)] text-[color:var(--burnt)]">
+    <LanguageProvider>
+      <IndexInner />
+    </LanguageProvider>
+  );
+}
+
+function IndexInner() {
+  useReveal();
+  const { lang } = useT();
+  return (
+    <div
+      dir={lang === "ar" ? "rtl" : "ltr"}
+      className="min-h-screen bg-[color:var(--ivory)] text-[color:var(--burnt)]"
+    >
       <Header />
       <main>
         <Hero />
