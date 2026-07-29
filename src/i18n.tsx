@@ -472,6 +472,7 @@ const ar: Dict = {
 };
 
 export const DICTS: Record<Lang, Dict> = { fr, en, es, ar };
+export type { Dict };
 
 type Ctx = { lang: Lang; setLang: (l: Lang) => void; t: Dict };
 const LangContext = createContext<Ctx | null>(null);
