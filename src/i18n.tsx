@@ -196,7 +196,7 @@ const fr: Dict = {
     message: "Message (optionnel)",
     messagePh: "Une demande particulière ?",
     submit: "Réserver sur WhatsApp",
-    requiredHint: "Nom et un moyen de contact (email ou téléphone) requis.",
+    requiredHint: "Le nom complet est requis.",
   },
   wa: {
     greetingSimple: "Bonjour Riad Anis Fes, je souhaite vérifier les disponibilités pour un séjour.",
@@ -319,7 +319,7 @@ const en: Dict = {
     message: "Message (optional)",
     messagePh: "Any special request?",
     submit: "Book on WhatsApp",
-    requiredHint: "Name and one contact (email or phone) required.",
+    requiredHint: "Full name is required.",
   },
   wa: {
     greetingSimple: "Hello Riad Anis Fes, I'd like to check availability for a stay.",
@@ -442,7 +442,7 @@ const es: Dict = {
     message: "Mensaje (opcional)",
     messagePh: "¿Alguna petición especial?",
     submit: "Reservar por WhatsApp",
-    requiredHint: "Nombre y un medio de contacto (email o teléfono) obligatorios.",
+    requiredHint: "El nombre completo es obligatorio.",
   },
   wa: {
     greetingSimple: "Hola Riad Anis Fes, me gustaría comprobar la disponibilidad para una estancia.",
@@ -565,7 +565,7 @@ const ar: Dict = {
     message: "رسالة (اختياري)",
     messagePh: "أي طلب خاص؟",
     submit: "احجز عبر واتساب",
-    requiredHint: "الاسم ووسيلة اتصال واحدة (بريد أو هاتف) مطلوبة.",
+    requiredHint: "الاسم الكامل مطلوب.",
   },
   wa: {
     greetingSimple: "مرحباً رياض أنيس فاس، أودّ الاستفسار عن توفر إقامة.",

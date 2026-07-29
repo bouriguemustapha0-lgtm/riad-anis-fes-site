@@ -722,8 +722,6 @@ function FinalCta() {
   const r = t.reservation;
   const locale = lang === "fr" ? "fr-FR" : lang === "es" ? "es-ES" : lang === "ar" ? "ar-MA" : "en-GB";
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [guests, setGuests] = useState("2");
@@ -742,15 +740,13 @@ function FinalCta() {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || (!email.trim() && !phone.trim())) {
+    if (!name.trim()) {
       setError(r.requiredHint);
       return;
     }
     setError("");
     const url = buildWhatsAppUrl({
       name,
-      email,
-      phone,
       checkIn,
       checkOut,
       guests,
@@ -788,14 +784,6 @@ function FinalCta() {
             <div className="md:col-span-2">
               <label htmlFor="r-name" className={labelClass}>{r.name}</label>
               <input id="r-name" value={name} onChange={(e) => setName(e.target.value)} placeholder={r.namePh} className={fieldClass} autoComplete="name" />
-            </div>
-            <div>
-              <label htmlFor="r-email" className={labelClass}>{r.email}</label>
-              <input id="r-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={r.emailPh} className={fieldClass} autoComplete="email" />
-            </div>
-            <div>
-              <label htmlFor="r-phone" className={labelClass}>{r.phone}</label>
-              <input id="r-phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder={r.phonePh} className={fieldClass} autoComplete="tel" />
             </div>
             <div>
               <label htmlFor="r-checkin" className={labelClass}>{r.checkIn}</label>
