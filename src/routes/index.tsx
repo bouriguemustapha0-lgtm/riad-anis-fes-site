@@ -298,6 +298,8 @@ function LanguageSwitcher({ dark = false }: { dark?: boolean }) {
 function Header() {
   const scrolled = useScrolled(40);
   const [open, setOpen] = useState(false);
+  const { t } = useT();
+  const NAV = useNav();
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
@@ -338,18 +340,22 @@ function Header() {
             </a>
           ))}
         </nav>
-        <div className="hidden lg:block">
-          <CtaButton>Réserver maintenant</CtaButton>
+        <div className="hidden items-center gap-3 lg:flex">
+          <LanguageSwitcher dark={scrolled} />
+          <CtaButton>{t.cta.book}</CtaButton>
         </div>
+        <div className="flex items-center gap-2 lg:hidden">
+          <LanguageSwitcher dark={scrolled} />
         <button
           onClick={() => setOpen(!open)}
           aria-label="Menu"
-          className={`lg:hidden ${scrolled ? "text-[color:var(--burnt)]" : "text-white"}`}
+          className={`${scrolled ? "text-[color:var(--burnt)]" : "text-white"}`}
         >
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
+        </div>
       </div>
       {open && (
         <div className="border-t border-[color:var(--gold)]/30 bg-[color:var(--ivory)] px-6 py-4 lg:hidden">
@@ -364,7 +370,7 @@ function Header() {
                 {n.label}
               </a>
             ))}
-            <CtaButton>Réserver maintenant</CtaButton>
+            <CtaButton>{t.cta.book}</CtaButton>
           </nav>
         </div>
       )}
@@ -373,6 +379,7 @@ function Header() {
 }
 
 function Hero() {
+  const { t } = useT();
   return (
     <section id="accueil" className="relative min-h-screen w-full overflow-hidden">
       <img
@@ -383,17 +390,16 @@ function Hero() {
       <div className="absolute inset-0 bg-gradient-to-b from-[color:var(--burnt)]/60 via-[color:var(--burnt)]/30 to-[color:var(--burnt)]/70" />
       <div className="relative z-10 mx-auto flex min-h-screen max-w-5xl flex-col items-center justify-center px-6 text-center text-white">
         <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-xs font-medium tracking-widest uppercase backdrop-blur">
-          ⭐ 9,1/10 — Les couples adorent cet endroit
+          {t.hero.badge}
         </span>
         <h1 className="max-w-3xl text-balance font-serif text-5xl leading-[1.05] md:text-7xl">
-          Un refuge d'un autre temps, au cœur de Fès
+          {t.hero.title}
         </h1>
         <p className="mt-6 max-w-2xl text-balance text-base text-white/90 md:text-lg">
-          Entre patios ombragés, zelliges centenaires et silence retrouvé, le Riad Anis Fes vous accueille
-          à deux pas de la médina et du Palais royal.
+          {t.hero.subtitle}
         </p>
         <div className="mt-10">
-          <CtaButton>Réserver maintenant</CtaButton>
+          <CtaButton>{t.cta.book}</CtaButton>
         </div>
       </div>
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/70">
