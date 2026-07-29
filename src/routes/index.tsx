@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { LanguageProvider, useT, LANGS, type Lang } from "@/i18n";
+import { LanguageProvider, useT, LANGS, type Lang, type Dict } from "@/i18n";
 import heroPatioAsset from "@/assets/hero-patio.jpg.asset.json";
 import roomDoubleAsset from "@/assets/room-double.jpg.asset.json";
 import roomTripleAsset from "@/assets/room-triple.jpg.asset.json";
@@ -47,7 +47,7 @@ function buildWhatsAppUrl({
   email?: string;
   phone?: string;
   notes?: string;
-  wa: import("@/i18n").DictType extends never ? never : ReturnType<typeof useT>["t"]["wa"];
+  wa: Dict["wa"];
   locale: string;
 }) {
   const fmt = (d?: string) => {
