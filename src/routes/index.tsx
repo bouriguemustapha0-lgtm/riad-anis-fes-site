@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { LanguageProvider, useT, LANGS, type Lang } from "@/i18n";
 import heroPatioAsset from "@/assets/hero-patio.jpg.asset.json";
 import roomDoubleAsset from "@/assets/room-double.jpg.asset.json";
 import roomTripleAsset from "@/assets/room-triple.jpg.asset.json";
@@ -25,11 +26,6 @@ const moroccanMeal = moroccanMealAsset.url;
 const logoUrl = logoAsset.url;
 
 const WHATSAPP_PHONE = "212661504917";
-const WHATSAPP_URL =
-  `https://wa.me/${WHATSAPP_PHONE}?text=` +
-  encodeURIComponent(
-    "Bonjour Riad Anis Fes, je souhaite vérifier les disponibilités pour un séjour.",
-  );
 
 function buildWhatsAppUrl({
   checkIn,
@@ -40,6 +36,8 @@ function buildWhatsAppUrl({
   email,
   phone,
   notes,
+  wa,
+  locale,
 }: {
   checkIn?: string;
   checkOut?: string;
@@ -49,32 +47,44 @@ function buildWhatsAppUrl({
   email?: string;
   phone?: string;
   notes?: string;
+  wa: import("@/i18n").DictType extends never ? never : ReturnType<typeof useT>["t"]["wa"];
+  locale: string;
 }) {
   const fmt = (d?: string) => {
     if (!d) return "";
     const dt = new Date(d);
     if (Number.isNaN(dt.getTime())) return d;
-    return dt.toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" });
+    return dt.toLocaleDateString(locale, { day: "2-digit", month: "long", year: "numeric" });
   };
   const clean = (s?: string, max = 200) => (s ?? "").trim().slice(0, max);
   const lines = [
-    "Bonjour Riad Anis Fes,",
-    "Je souhaite vérifier les disponibilités pour un séjour :",
+    wa.greetingHead,
+    wa.intent,
   ];
   const cname = clean(name, 100);
-  if (cname) lines.push(`• Nom : ${cname}`);
+  if (cname) lines.push(`• ${wa.labels.name} : ${cname}`);
   const cemail = clean(email, 255);
-  if (cemail) lines.push(`• Email : ${cemail}`);
+  if (cemail) lines.push(`• ${wa.labels.email} : ${cemail}`);
   const cphone = clean(phone, 30);
-  if (cphone) lines.push(`• Téléphone : ${cphone}`);
-  if (checkIn) lines.push(`• Arrivée : ${fmt(checkIn)}`);
-  if (checkOut) lines.push(`• Départ : ${fmt(checkOut)}`);
-  if (guests) lines.push(`• Voyageurs : ${guests}`);
-  if (room) lines.push(`• Chambre souhaitée : ${room}`);
+  if (cphone) lines.push(`• ${wa.labels.phone} : ${cphone}`);
+  if (checkIn) lines.push(`• ${wa.labels.checkIn} : ${fmt(checkIn)}`);
+  if (checkOut) lines.push(`• ${wa.labels.checkOut} : ${fmt(checkOut)}`);
+  if (guests) lines.push(`• ${wa.labels.guests} : ${guests}`);
+  if (room) lines.push(`• ${wa.labels.room} : ${room}`);
   const cnotes = clean(notes, 500);
-  if (cnotes) lines.push(`• Message : ${cnotes}`);
-  lines.push("Merci !");
+  if (cnotes) lines.push(`• ${wa.labels.message} : ${cnotes}`);
+  lines.push(wa.thanks);
   return `https://wa.me/${WHATSAPP_PHONE}?text=` + encodeURIComponent(lines.join("\n"));
+}
+
+function useWhatsAppUrl() {
+  const { t, lang } = useT();
+  const locale = lang === "fr" ? "fr-FR" : lang === "es" ? "es-ES" : lang === "ar" ? "ar-MA" : "en-GB";
+  const simple = `https://wa.me/${WHATSAPP_PHONE}?text=` + encodeURIComponent(t.wa.greetingSimple);
+  return {
+    simple,
+    withRoom: (room: string) => buildWhatsAppUrl({ room, wa: t.wa, locale }),
+  };
 }
 
 const GALLERY: { src: string; alt: string }[] = [
