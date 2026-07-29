@@ -447,7 +447,7 @@ function Rooms() {
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-sm font-medium text-[color:var(--gold)] transition-colors hover:text-[color:var(--ivory)]"
                   >
-                    Vérifier la disponibilité →
+                    BOOK NOW →
                   </a>
                 </div>
               </div>
@@ -771,12 +771,7 @@ function FinalCta() {
           Places limitées selon la saison — vérifiez vos dates dès maintenant.
         </p>
         <div className="mt-10">
-          <a
-            href="mailto:contact@riadanisfes.com"
-            className="inline-flex items-center gap-3 rounded-full bg-[color:var(--ivory)] px-8 py-4 text-sm font-medium text-[color:var(--burnt)] transition-all hover:bg-[color:var(--gold)] hover:text-[color:var(--burnt)]"
-          >
-            Voir les disponibilités →
-          </a>
+          <CtaButton>BOOK NOW</CtaButton>
         </div>
       </div>
     </section>
