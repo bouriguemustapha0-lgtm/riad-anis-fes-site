@@ -442,7 +442,7 @@ const es: Dict = {
     message: "Mensaje (opcional)",
     messagePh: "¿Alguna petición especial?",
     submit: "Reservar por WhatsApp",
-    requiredHint: "Nombre y un medio de contacto (email o teléfono) obligatorios.",
+    requiredHint: "El nombre completo es obligatorio.",
   },
   wa: {
     greetingSimple: "Hola Riad Anis Fes, me gustaría comprobar la disponibilidad para una estancia.",
