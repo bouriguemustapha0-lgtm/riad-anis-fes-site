@@ -52,6 +52,27 @@ type Dict = {
   };
   reviews: { couples: string; breakfast: string; quote: string };
   finalCta: { title: string; subtitle: string };
+  reservation: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    name: string;
+    namePh: string;
+    email: string;
+    emailPh: string;
+    phone: string;
+    phonePh: string;
+    checkIn: string;
+    checkOut: string;
+    guests: string;
+    guestsUnit: string;
+    room: string;
+    selectRoom: string;
+    message: string;
+    messagePh: string;
+    submit: string;
+    requiredHint: string;
+  };
   footer: { address: string; license: string; nav: string; follow: string; cancel: string; rights: string };
   gallery: { eyebrow: string; title: string };
   wa: {
