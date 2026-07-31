@@ -931,6 +931,7 @@ function IndexInner() {
         <FinalCta />
       </main>
       <Footer />
+      <WhatsAppFab />
     </div>
   );
 }
