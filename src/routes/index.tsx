@@ -79,6 +79,24 @@ function buildWhatsAppUrl({
 
 const RESERVATION_EVENT = "riad:set-reservation-room";
 
+function WhatsAppFab() {
+  const { t, lang } = useT();
+  const href = buildWhatsAppUrl({ wa: t.wa, locale: lang === "ar" ? "ar-MA" : lang === "en" ? "en-GB" : lang === "es" ? "es-ES" : "fr-FR" });
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="WhatsApp"
+      className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] shadow-lg transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+    >
+      <svg viewBox="0 0 32 32" className="h-8 w-8 fill-white" aria-hidden="true">
+        <path d="M16.04 3C8.85 3 3 8.85 3 16.04c0 2.3.6 4.46 1.66 6.34L3 29l6.79-1.62a13 13 0 0 0 6.25 1.6h.01C23.23 28.98 29 23.13 29 15.94 29 8.75 23.23 3 16.04 3Zm7.6 18.4c-.32.9-1.86 1.72-2.56 1.79-.65.06-1.47.1-4.3-1.03-3.35-1.33-5.45-4.8-5.61-5.03-.16-.23-1.33-1.79-1.33-3.42 0-1.62.85-2.42 1.15-2.75.3-.33.65-.41.87-.41.25 0 .49 0 .7.01.23.01.53-.08.83.63.3.72 1.02 2.48 1.11 2.66.09.18.15.39.03.62-.12.23-.24.43-.42.66-.18.23-.38.4-.56.63-.18.22-.38.46-.17.86.21.4.94 1.55 2.02 2.51 1.39 1.24 2.56 1.62 2.92 1.8.36.18.57.15.78-.09.21-.24.9-1.05 1.14-1.41.24-.36.48-.3.81-.18.33.12 2.09.99 2.45 1.17.36.18.6.27.69.42.09.15.09.88-.23 1.78Z" />
+      </svg>
+    </a>
+  );
+}
+
 function goToReservation(room?: string) {
   if (room) window.dispatchEvent(new CustomEvent(RESERVATION_EVENT, { detail: room }));
   const el = document.getElementById("contact");
@@ -931,6 +949,7 @@ function IndexInner() {
         <FinalCta />
       </main>
       <Footer />
+      <WhatsAppFab />
     </div>
   );
 }
