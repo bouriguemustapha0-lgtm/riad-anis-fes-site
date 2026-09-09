@@ -204,16 +204,73 @@ function Gallery() {
   );
 }
 
+const OG_IMAGE =
+  "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/6ff39e40-d194-49d1-b576-21bc23f4bd56/id-preview-036a95e5--d77d4267-18a4-461d-b390-a46c62060a53.lovable.app-1785233446946.png";
+
 export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
     meta: [
-      { title: "Riad Anis Fes | Riad traditionnel à Fès" },
-      { name: "description", content: "Séjournez au Riad Anis Fes, maison traditionnelle près de la médina, avec chambres confortables, cuisine marocaine et terrasse." },
-      { property: "og:title", content: "Riad Anis Fes | Riad traditionnel à Fès" },
-      { property: "og:description", content: "Un séjour authentique au cœur de Fès, entre patio, cuisine marocaine et hospitalité chaleureuse." },
+      { title: "Riad Anis Fes | Site Officiel — Reservation Directe" },
+      {
+        name: "description",
+        content:
+          "Réservez directement sur le site officiel du Riad Anis Fes. Situé au cœur de la médina, profitez des meilleurs tarifs, petit-déjeuner inclus et service personnalisé.",
+      },
+      { property: "og:title", content: "Riad Anis Fes | Site Officiel" },
+      {
+        property: "og:description",
+        content:
+          "Réservez votre séjour au Riad Anis Fes directement auprès de l'établissement au meilleur prix garanti.",
+      },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://www.riadanis.com/" },
+      { property: "og:image", content: OG_IMAGE },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Riad Anis Fes | Site Officiel" },
+      {
+        name: "twitter:description",
+        content:
+          "Réservez votre séjour au Riad Anis Fes directement auprès de l'établissement au meilleur prix garanti.",
+      },
+      { name: "twitter:image", content: OG_IMAGE },
+    ],
+    links: [{ rel: "canonical", href: "https://www.riadanis.com/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Hotel",
+          name: "Riad Anis Fes",
+          alternateName: "Riad Anis Fès — Site Officiel",
+          description:
+            "Riad traditionnel au cœur de la médina de Fès : chambres double, triple et quadruple, cuisine marocaine, terrasse et réservation directe au meilleur tarif garanti.",
+          url: "https://www.riadanis.com/",
+          officialWebsite: "https://www.riadanis.com/",
+          image: [OG_IMAGE],
+          priceRange: "$$",
+          telephone: "+212661504917",
+          currenciesAccepted: "MAD",
+          starRating: { "@type": "Rating", ratingValue: "9.1", bestRating: "10" },
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: "Médina de Fès, près de la Place Batha",
+            addressLocality: "Fès",
+            addressRegion: "Fès-Meknès",
+            postalCode: "30000",
+            addressCountry: "MA",
+          },
+          geo: { "@type": "GeoCoordinates", latitude: 34.0603, longitude: -4.9797 },
+          amenityFeature: [
+            "Wi-Fi gratuit",
+            "Petit-déjeuner",
+            "Terrasse",
+            "Climatisation",
+            "Navette aéroport",
+          ].map((name) => ({ "@type": "LocationFeatureSpecification", name, value: true })),
+        }),
+      },
     ],
   }),
 });
@@ -404,8 +461,15 @@ function Header() {
   );
 }
 
+const RATE_BADGE: Record<string, string> = {
+  fr: "Meilleur tarif garanti — Réservation directe",
+  en: "Best rate guaranteed — Direct booking",
+  es: "Mejor tarifa garantizada — Reserva directa",
+  ar: "أفضل سعر مضمون — حجز مباشر",
+};
+
 function Hero() {
-  const { t } = useT();
+  const { t, lang } = useT();
   return (
     <section id="accueil" className="relative min-h-screen w-full overflow-hidden">
       <img
@@ -419,13 +483,22 @@ function Hero() {
           {t.hero.badge}
         </span>
         <h1 className="max-w-3xl text-balance font-serif text-5xl leading-[1.05] md:text-7xl">
+          <span className="mb-3 block text-sm font-sans font-medium uppercase tracking-[0.25em] text-white/85 md:text-base">
+            Riad Anis Fes - Site Officiel
+          </span>
           {t.hero.title}
         </h1>
         <p className="mt-6 max-w-2xl text-balance text-base text-white/90 md:text-lg">
           {t.hero.subtitle}
         </p>
-        <div className="mt-10">
+        <div className="mt-10 flex flex-col items-center gap-3">
           <CtaButton>{t.cta.book}</CtaButton>
+          <span className="inline-flex items-center gap-2 rounded-full border border-[color:var(--gold)]/50 bg-black/25 px-3.5 py-1.5 text-[11px] font-medium tracking-wide text-white/90 backdrop-blur md:text-xs">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <path d="M20 6 9 17l-5-5" />
+            </svg>
+            {RATE_BADGE[lang] ?? RATE_BADGE.fr}
+          </span>
         </div>
       </div>
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/70">
