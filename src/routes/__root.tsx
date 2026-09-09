@@ -77,6 +77,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "google-site-verification", content: "-OsDWa1PwtF0GiMHI1YxvxmYjKr3S4nuT0_n-xs8QKk" },
       { title: "Riad Anis Fes — Refuge d'un autre temps au cœur de Fès" },
       { name: "description", content: "Riad traditionnel au cœur de la médina de Fès. Chambres cocons, cuisine marocaine, terrasse au coucher du soleil. Note 9,1/10." },
       { property: "og:title", content: "Riad Anis Fes — Refuge d'un autre temps au cœur de Fès" },
