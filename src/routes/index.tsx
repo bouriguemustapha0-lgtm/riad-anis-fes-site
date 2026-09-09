@@ -501,27 +501,6 @@ function Hero() {
           </span>
         </div>
       </div>
-    <section id="accueil" className="relative min-h-screen w-full overflow-hidden">
-      <img
-        src={heroPatio}
-        alt="Patio du Riad Anis Fes au coucher du soleil"
-        className="absolute inset-0 h-full w-full object-cover"
-      />
-      <div className="absolute inset-0 bg-gradient-to-b from-[color:var(--burnt)]/60 via-[color:var(--burnt)]/30 to-[color:var(--burnt)]/70" />
-      <div className="relative z-10 mx-auto flex min-h-screen max-w-5xl flex-col items-center justify-center px-6 text-center text-white">
-        <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-xs font-medium tracking-widest uppercase backdrop-blur">
-          {t.hero.badge}
-        </span>
-        <h1 className="max-w-3xl text-balance font-serif text-5xl leading-[1.05] md:text-7xl">
-          {t.hero.title}
-        </h1>
-        <p className="mt-6 max-w-2xl text-balance text-base text-white/90 md:text-lg">
-          {t.hero.subtitle}
-        </p>
-        <div className="mt-10">
-          <CtaButton>{t.cta.book}</CtaButton>
-        </div>
-      </div>
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/70">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="animate-bounce">
           <path d="M12 5v14M5 12l7 7 7-7" />
