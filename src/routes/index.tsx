@@ -461,9 +461,46 @@ function Header() {
   );
 }
 
+const RATE_BADGE: Record<string, string> = {
+  fr: "Meilleur tarif garanti — Réservation directe",
+  en: "Best rate guaranteed — Direct booking",
+  es: "Mejor tarifa garantizada — Reserva directa",
+  ar: "أفضل سعر مضمون — حجز مباشر",
+};
+
 function Hero() {
-  const { t } = useT();
+  const { t, lang } = useT();
   return (
+    <section id="accueil" className="relative min-h-screen w-full overflow-hidden">
+      <img
+        src={heroPatio}
+        alt="Patio du Riad Anis Fes au coucher du soleil"
+        className="absolute inset-0 h-full w-full object-cover"
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-[color:var(--burnt)]/60 via-[color:var(--burnt)]/30 to-[color:var(--burnt)]/70" />
+      <div className="relative z-10 mx-auto flex min-h-screen max-w-5xl flex-col items-center justify-center px-6 text-center text-white">
+        <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-xs font-medium tracking-widest uppercase backdrop-blur">
+          {t.hero.badge}
+        </span>
+        <h1 className="max-w-3xl text-balance font-serif text-5xl leading-[1.05] md:text-7xl">
+          <span className="mb-3 block text-sm font-sans font-medium uppercase tracking-[0.25em] text-white/85 md:text-base">
+            Riad Anis Fes - Site Officiel
+          </span>
+          {t.hero.title}
+        </h1>
+        <p className="mt-6 max-w-2xl text-balance text-base text-white/90 md:text-lg">
+          {t.hero.subtitle}
+        </p>
+        <div className="mt-10 flex flex-col items-center gap-3">
+          <CtaButton>{t.cta.book}</CtaButton>
+          <span className="inline-flex items-center gap-2 rounded-full border border-[color:var(--gold)]/50 bg-black/25 px-3.5 py-1.5 text-[11px] font-medium tracking-wide text-white/90 backdrop-blur md:text-xs">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <path d="M20 6 9 17l-5-5" />
+            </svg>
+            {RATE_BADGE[lang] ?? RATE_BADGE.fr}
+          </span>
+        </div>
+      </div>
     <section id="accueil" className="relative min-h-screen w-full overflow-hidden">
       <img
         src={heroPatio}
